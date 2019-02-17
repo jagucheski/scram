@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template/layoutBase.xhtml">
+	<ui:define name="content">
+
+		<p:tabView id="tbview-cadUsuaria"
+			style="width:auto;height:auto;margin:auto;" >
+			<p:tab id="tb-consultaUsuaria" title="Consultar Usuárias" >
+				<h:form style="margin:autotext-align:center;" id="form-consulta">
+					<h:panelGrid id="panelGrid-campos-form" columns="9" cellpadding="5">
+
+						<p:outputLabel value="Nome:" for="inputText-usuariaFindNome" />
+						<p:inputText id="inputText-usuariaFindNome"
+							style="width:300px;height:11px;" maxlength="70"
+							value="#{viewUsuariaController.usuariaFind.nome}" />
+
+						<p:outputLabel value="CPF:" for="inputText-usuariaFindCpf" />
+						<p:inputText id="inputText-usuariaFindCpf"
+							style="width:90px;height:11px;" maxlength="14"
+							value="#{viewUsuariaController.usuariaFind.cpf}"
+							onkeydown="javascript: fMasc( this, mCPF );" />
+
+						<p:commandButton value="Pesquisar" style="height:23px;"
+							id="commandButton-usuariaCadFind" icon="ui-icon-search"
+							actionListener="#{viewUsuariaController.findUsuaria}"
+							update="dataTable-usuariaList" />
+						
+					</h:panelGrid>
+					<p:dataTable id="dataTable-usuariaList" var="usuaria"
+						value="#{viewUsuariaController.usuariaList}" rows="15"
+						paginator="true"
+                 		paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+						style="width:100%;" emptyMessage="Nenhum Registro Encontrado"
+						resizableColumns="true" >
+
+						<f:facet name="header">
+     				       Usuárias
+      				    </f:facet>
+						<p:column headerText="Código" sortBy="#{usuaria.id}" style="text-align:center;" width="5%">
+							<h:outputText value="#{usuaria.id}" />
+						</p:column>
+
+						<p:column headerText="Nome" sortBy="#{usuaria.nome}">
+							<h:outputText value="#{usuaria.nome}" />
+						</p:column>
+
+						<p:column headerText="CPF" sortBy="#{usuaria.cpf}" style="text-align:center;">
+							<h:outputText value="#{usuaria.cpf}" />
+						</p:column>
+
+						<p:column headerText="RG" sortBy="#{usuaria.rg}" style="text-align:center;">
+							<h:outputText value="#{usuaria.rg}" />
+						</p:column>
+
+						<p:column headerText="Nasc." sortBy="#{usuaria.nascimento}" style="text-align:center;">
+							<h:outputText value="#{usuaria.nascimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Cidade" sortBy="#{usuaria.cidade.nome}" style="text-align:center;">
+							<h:outputText value="#{usuaria.cidade.nome}" />
+						</p:column>
+
+						<p:column headerText="Tel. Residencial" sortBy="#{usuaria.contato.telefoneResidencial}" style="text-align:center;">
+							<h:outputText value="#{usuaria.contato.telefoneResidencial}" />
+						</p:column>
+
+						<p:column headerText="Tel. Celular" sortBy="#{usuaria.contato.telefoneCelular}" style="text-align:center;">
+							<h:outputText value="#{usuaria.contato.telefoneCelular}" />
+						</p:column>
+						
+						<p:column style="text-align: center;" width="5%;" headerText="Ações"  exportable="false">
+							<p:commandButton id="btnDetalharUsuaria"
+								style="height: 20px;width: 25px;margin:-2px;" update=":panel-dadosUsuaria"
+								title="Detalhar Usuária" icon="ui-icon-search" oncomplete="PF('dialogDetalharUsuaria').show();"
+								action="#{viewUsuariaController.detalharUsuaria}" process="@this">
+								<f:setPropertyActionListener value="#{usuaria.id}" target="#{viewUsuariaController.usuariaIdSelecionado}" />
+							</p:commandButton>
+						</p:column>
+						
+						 <f:facet name="footer">
+      				       	 <div style="float:left;padding-top: 7px;">
+				               <h:commandLink>
+									<p:graphicImage url="/resources/imagens/xls_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para Excel" />
+				                    <p:dataExporter type="xls" target="dataTable-usuariaList" encoding="ISO-8859-1" options="#{exportaDocumentoCustom.excelOpt}"  fileName="scram_usuarias" />
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+
+				                    <p:graphicImage url="/resources/imagens/pdf_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para PDF" />
+				                    <p:dataExporter type="pdf" target="dataTable-usuariaList" fileName="scram_usuarias" encoding="ISO-8859-1" preProcessor="#{exportaDocumentoCustom.preProcessPDFUsuarias}"  options="#{exportaDocumentoCustom.pdfOpt}"/>
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+									<p:graphicImage url="/resources/imagens/csv_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para CSV" />
+				                    <p:dataExporter type="csv" target="dataTable-usuariaList" encoding="ISO-8859-1" fileName="scram_usuarias"/>
+				                </h:commandLink>		 
+			            	</div>
+			      		 </f:facet>
+
+					</p:dataTable>
+				</h:form>
+			</p:tab>
+		</p:tabView>
+		
+		<p:dialog header="Dados da Usuária" widgetVar="dialogDetalharUsuaria" closable="true" style="background-color: #f3f3f3;">
+				
+					<p:panel id="panel-dadosUsuaria"  style="width:610px;" >
+     					<h:panelGrid id="panelGrid-cadUsuariaCod" columns="2" cellpadding="5">
+							<p:outputLabel value="Código:" for="outputText-usuariaId" style="font-weight: bold;"  />
+							<p:outputLabel id="outputText-usuariaId" 
+								style="width:50px;margin-left:25px;text-align:center;"
+								value="#{viewUsuariaController.usuariaView.id}" />
+     					 </h:panelGrid>	
+     							 
+     					 <h:panelGrid id="panelGrid-cadUsuariaNome" columns="2" cellpadding="5">
+							<p:outputLabel value="Nome:" for="outputText-usuariaCadnome" style="font-weight: bold;" />
+							<p:outputLabel id="outputText-usuariaCadnome" 
+								style="width:400px;margin-left:25px;"
+								value="#{viewUsuariaController.usuariaView.nome}"/>
+     					 </h:panelGrid>	
+
+						 <h:panelGrid id="panelGrid-cadUsuariaCpf" columns="4" cellpadding="5">
+						 	<p:outputLabel value="CPF:" for="outputText-usuariaCadcpf" style="font-weight: bold;" />
+					     	<p:outputLabel id="outputText-usuariaCadcpf" 
+									style="width:110px;margin-left: 34px;" 
+									value="#{viewUsuariaController.usuariaView.cpf}"/>
+
+							 <p:outputLabel value="RG:" for="outputText-usuariaCadRG" 
+									style="width:110px;margin-left: 126px;font-weight: bold;"/>
+							 <p:outputLabel id="outputText-usuariaCadRG"
+									style="width:110px;" 
+									value="#{viewUsuariaController.usuariaView.rg}"/>									
+						</h:panelGrid>
+
+ 						<h:panelGrid id="panelGrid-cadUsuariaNis" columns="4" cellpadding="5">
+							<p:outputLabel value="NIS:" for="outputText-usuariaCadNIS" style="font-weight: bold;" />
+							<p:outputLabel id="outputText-usuariaCadNIS"
+								style="width:110px;margin-left: 43px;" 
+								value="#{viewUsuariaController.usuariaView.nis}"/>
+
+							<p:outputLabel value="Data Nasc.:" for="outputText-usuariaCadNascimento" 
+									style="margin-left: 82px;font-weight: bold;" />
+							<p:outputLabel id="outputText-usuariaCadNascimento" value="#{viewUsuariaController.usuariaView.nascimento}" converter="dateConverter" />
+						</h:panelGrid>
+							
+						<h:panelGrid id="panelGrid-endereco" columns="2" cellpadding="5">
+							<p:outputLabel value="Endereço:" for="outputText-usuariaCadEndereco" style="font-weight: bold;" />
+							<p:outputLabel id="outputText-usuariaCadEndereco"
+								style="width:400px;margin-left: 10px;"
+								value="#{viewUsuariaController.usuariaView.endereco}" />
+						</h:panelGrid>	
+						
+						<h:panelGrid id="panelGrid-bairro" columns="2" cellpadding="5">
+							<p:outputLabel value="Bairro:" for="outputText-usuariaCadBairro" style="font-weight: bold;" />
+							<p:outputLabel id="outputText-usuariaCadBairro"
+								style="width:400px;margin-left: 30px;" 
+								value="#{viewUsuariaController.usuariaView.bairro}" />
+						</h:panelGrid>	
+						
+						<h:panelGrid id="panelGrid-cadUsuariaCidade" columns="3" cellpadding="5">
+							<p:outputLabel value="Cidade:" for="outputText-usuariaCadCidade" style="font-weight: bold;" />
+							<p:outputLabel id="outputText-usuariaCadCidade" style="margin-left: 24px;"
+								value="#{viewUsuariaController.usuariaView.cidade.nome}"	/>							
+						</h:panelGrid>	
+					<p:spacer />
+					
+					<p:tabView id="tbview-cadUsuariaDadosOpcionais"	 activeIndex="#{viewUsuariaController.tabIndexCadUsuariaPerfis}"
+						 style="width:auto;height:auto;margin:auto;min-height: 180px;">
+						
+							<p:tab id="tb-cadUsuariaperfilCultural" title="Perfil Cultural" >
+								<h:panelGrid id="panelGrid-cadUsuariaEtnia" columns="4" cellpadding="5">
+						
+									<p:outputLabel value="Etnia:" style="font-weight: bold;" />								
+									<p:outputLabel id="usuariaCadEtnia" 
+										value="#{viewUsuariaController.usuariaView.etnia}"/>
+									
+									<p:outputLabel value="Religião:" style="margin-left: 23px;font-weight: bold;" />								
+									<p:outputLabel id="usuariaCadReligiao"	
+										value="#{viewUsuariaController.usuariaView.religiao}"/>
+									
+									<p:outputLabel value="Orientação Sexual:" style="font-weight: bold;" />								
+									<p:outputLabel id="usuariaCadSexo" style="min-width: 113px;"
+										value="#{viewUsuariaController.usuariaView.sexo}" />
+								</h:panelGrid>
+							</p:tab>
+							<p:tab id="tb-cadUsuariaperfilProfissional" title="Perfil Profissional" >
+								<h:panelGrid id="panelGrid-perfilProfissional" columns="2" cellpadding="5">
+									<p:outputLabel value="Grau de Instrução:" for="usuariaCadGrauInstrucao" style="font-weight: bold;" />
+									<p:outputLabel id="usuariaCadGrauInstrucao" 					
+										value="#{viewUsuariaController.usuariaView.grauInstrucao}"/>
+										
+									<p:outputLabel value="Profissão:" for="outputText-usuariaCadProfissiao" style="font-weight: bold;" />
+							        <p:outputLabel id="outputText-usuariaCadProfissiao" maxlength="200"
+							        	style="width:408px;" 
+							        	value="#{viewUsuariaController.usuariaView.profissao}"/>
+								</h:panelGrid>
+							</p:tab>
+	
+							<p:tab id="tb-cadUsuariaperfilSocial" title="Perfil Social" >
+									
+								<h:panelGrid id="panelGrid-cadUsuariaCadCadUnico" columns="2" cellpadding="5">
+									<p:outputLabel value="Cadastro Único:" for="outputText-usuariaCadCadUnico" style="font-weight: bold;" />
+									<p:outputLabel id="outputText-usuariaCadCadUnico"
+										style="width:110px;margin-left:29px;"
+										value="#{viewUsuariaController.usuariaView.cadUnico}"/>
+								</h:panelGrid>									
+	
+								<h:panelGrid id="panelGrid-cadUsuariaCadDataCadUnico" columns="2" cellpadding="5">
+									<p:outputLabel value="Data Cadastro Único:" for="outputText-usuariaCadDataCadUnico" style="font-weight: bold;" />
+							        <p:outputLabel id="outputText-usuariaCadDataCadUnico" 
+							        	value="#{viewUsuariaController.usuariaView.dataCadUnico}"
+							        	size="12" showOn="button" pattern="dd/MM/yyyy" mask="true"  locale="pt" />
+								</h:panelGrid>									
+								<h:panelGrid id="panelGrid-perfilSocial" columns="2" cellpadding="5">
+									<p:outputLabel value="Programa Social:" for="outputText-usuariaCadProgSocial" style="font-weight: bold;" />
+									<p:outputLabel id="outputText-usuariaCadProgSocial"
+										style="width:390px;margin-left:23px;"
+										value="#{viewUsuariaController.usuariaView.programaSocial}" />
+								</h:panelGrid>
+							</p:tab>
+							
+							<p:tab id="tb-cadUsuariaContato" title="Contato" >
+								<h:panelGrid id="panelGrid-telResidencial" columns="2" cellpadding="5">
+									<p:outputLabel value="Tel. Residencial:" style="font-weight: bold;" 
+										for="outputText-usuariaCadTelResidencial"/>
+									<p:outputLabel id="outputText-usuariaCadTelResidencial"	style="width:100px" 	
+										value="#{viewUsuariaController.usuariaView.contato.telefoneResidencial}"/>
+
+									<p:outputLabel value="Tel. Comercial:" for="outputText-usuariaCadTelComercial" style="font-weight: bold;" />
+									<p:outputLabel id="outputText-usuariaCadTelComercial" style="width:100px"
+										value="#{viewUsuariaController.usuariaView.contato.telefoneComercial}"/>
+
+									<p:outputLabel value="Tel. Celular:" for="outputText-usuariaCadTelCelular" style="font-weight: bold;" />
+									<p:outputLabel id="outputText-usuariaCadTelCelular" style="width:100px" 
+										value="#{viewUsuariaController.usuariaView.contato.telefoneCelular}"/>
+								</h:panelGrid>	
+								
+								<h:panelGrid id="panelGrid-email" columns="2" cellpadding="5">
+									<p:outputLabel value="E-mail:" for="outputText-usuariaCademail" style="font-weight: bold;" />
+									<p:outputLabel id="outputText-usuariaCademail"
+										style="width:400px;margin-left: 51px;" value="#{viewUsuariaController.usuariaView.contato.email}" />
+								</h:panelGrid>																
+							</p:tab>
+
+							<p:tab id="tb-cadUsuariaperfilSaude" title="Saúde" >
+								<h:panelGrid id="panelGrid-perfilSaude" columns="2" cellpadding="5">
+									<p:outputLabel value="Deficiência:" for="outputText-usuariaCaddeficiente" style="font-weight: bold;" />
+									<p:outputLabel id="outputText-usuariaCaddeficiente"
+										style="width:408px;" value="#{viewUsuariaController.usuariaView.deficiente}" />
+	
+									<p:outputLabel value="Doênça Crônica:" for="outputText-usuariaCadDoencaCronica" style="font-weight: bold;" />
+									<p:outputLabel id="outputText-usuariaCadDoencaCronica"
+										style="width:408px;" value="#{viewUsuariaController.usuariaView.doencaCronica}" />
+	
+									<p:outputLabel value="Medicamento:" for="outputText-usuariaCadMedicamento" style="font-weight: bold;" />
+									<p:outputLabel id="outputText-usuariaCadMedicamento"
+										style="width:408px;" value="#{viewUsuariaController.usuariaView.medicamento}" />
+								</h:panelGrid>
+							</p:tab>
+						</p:tabView>																	
+				</p:panel>	
+				<center>
+					<p:commandButton value="Fechar" type="button"  style="margin-top:10px;"   icon="ui-icon-close" onclick="PF('dialogDetalharUsuaria').hide();" />					
+				</center>						
+			</p:dialog>
+		
+	</ui:define>
+</ui:composition>
+</html>

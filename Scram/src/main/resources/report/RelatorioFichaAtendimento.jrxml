@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RelatorioFichaAtendimento" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="775fa8ca-057f-4071-946c-73f0cee76af7">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ScramSQL"/>
+	<parameter name="USUARIO" class="java.lang.String"/>
+	<parameter name="DATA_INICIO" class="java.lang.String"/>
+	<parameter name="DATA_FIM" class="java.lang.String"/>
+	<parameter name="VIOLENCIA" class="java.lang.String"/>
+	<parameter name="PERIODO" class="java.lang.String" isForPrompting="false"/>
+	<queryString language="SQL">
+		<![CDATA[select 	ficha_atendimento.id as codigo,  
+	TO_CHAR (ficha_atendimento.data_ficha_atendimento, 'DD/MM/YYYY') as data_ficha_atendimento, 
+	usuaria.nome as usuaria,
+	denunciado.nome as denunciado,	
+	ficha_atendimento.tipo_violencia as tipo_violencia,
+	ficha_atendimento.grau_parentesco_denunciado as grau_parentesco_denunciado
+ from ficha_atendimento
+	inner join denunciado ON ( denunciado.id = ficha_atendimento.denunciado_id) 
+	inner join usuaria ON ( usuaria.id = ficha_atendimento.usuaria_id) 
+
+order by ficha_atendimento.grau_parentesco_denunciado, ficha_atendimento.tipo_violencia]]>
+	</queryString>
+	<field name="codigo" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="codigo"/>
+	</field>
+	<field name="data_ficha_atendimento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="data_ficha_atendimento"/>
+	</field>
+	<field name="usuaria" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="usuaria"/>
+	</field>
+	<field name="denunciado" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="denunciado"/>
+	</field>
+	<field name="tipo_violencia" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="tipo_violencia"/>
+	</field>
+	<field name="grau_parentesco_denunciado" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="grau_parentesco_denunciado"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="49" splitType="Stretch">
+			<image>
+				<reportElement x="40" y="2" width="40" height="40" uuid="ec55090d-baff-4642-966c-583941689e3f"/>
+				<imageExpression><![CDATA["file:/C:/Users/Maicon%20Jagucheski/git/pmparobe/Scram/src/main/webapp/resources/imagens/logo_cram.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="120" y="2" width="310" height="20" uuid="4f5db22a-07a6-47e2-a734-1352ca9d438a"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Scram - Sistema do Centro de Referência de Atendimento à Mulher ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="204" y="22" width="170" height="12" uuid="276c8127-6332-43b0-9de5-fe500695cb8e"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Relatório de Ficha de Atendimento]]></text>
+			</staticText>
+			<rectangle radius="5">
+				<reportElement mode="Transparent" x="2" y="1" width="551" height="41" uuid="effd2b55-39fd-4b60-b557-f25065b5b388"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<line>
+				<reportElement x="1" y="27" width="551" height="1" uuid="46c33865-2b22-4e3e-9a74-d698e7fe9868"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="1" y="14" width="551" height="1" uuid="5f0ccf29-3f8d-4d51-b996-26ca3e594e81"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="16" width="40" height="10" uuid="b0f0fc75-955b-4b0c-b96b-acf2d32b41d7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6c0e4550-272b-45d2-a67c-a90689092f91"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="16" width="45" height="10" uuid="69ec1cd9-b9a1-495e-a3fd-9b935d9e94a6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0f30f2f5-3181-4065-b6fe-0f3749f20b6d"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="86" y="16" width="140" height="10" uuid="3e0cb415-8400-4759-ad50-66e807d681fe">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="68674452-ee57-4ee8-8d42-c439cf5706c9"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Usuária]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="226" y="16" width="140" height="10" uuid="0bc98b5e-7161-4ad1-ac1d-0db2184a5659">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e60625d2-0f98-49a6-a32c-8644faa69001"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Denunciado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="366" y="16" width="120" height="10" uuid="75c79320-3bb3-4b1b-b88d-9477a23ceacc">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="83efcc98-44d0-4365-942b-7c2ba7f15c59"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Tipo de Violência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="486" y="16" width="69" height="10" uuid="a0bc4697-98de-42b2-9d43-a24fc2fd8279">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e37a70bb-3323-463a-a977-a099de66d22c"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA[Parentesco]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="0" width="374" height="10" uuid="6fe09ac7-8e9f-4f8e-bc8b-757a280d94c1"/>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Tipo Violência: " + $P{VIOLENCIA} + "                  Período: " + $P{DATA_INICIO} +" - " +$P{DATA_FIM}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="40" height="10" uuid="fbc18050-a9d2-4db0-a0fb-0d72792d39a1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6c0e4550-272b-45d2-a67c-a90689092f91"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="0" width="45" height="10" uuid="961d9194-7641-49ad-acea-6a61834a9c59">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0f30f2f5-3181-4065-b6fe-0f3749f20b6d"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_ficha_atendimento}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="86" y="0" width="140" height="10" uuid="b66332d5-7267-408c-bd5f-4124926e2e65">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="68674452-ee57-4ee8-8d42-c439cf5706c9"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{usuaria}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="226" y="0" width="140" height="10" uuid="517fb509-5c38-49dd-b302-1d06e985a2c8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e60625d2-0f98-49a6-a32c-8644faa69001"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{denunciado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="366" y="0" width="120" height="10" uuid="203de54d-ae21-4782-ab2b-be22412b388f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="83efcc98-44d0-4365-942b-7c2ba7f15c59"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo_violencia}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="486" y="0" width="69" height="10" uuid="28b4b66f-b86b-4593-9bdc-cda57ddde49a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e37a70bb-3323-463a-a977-a099de66d22c"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grau_parentesco_denunciado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="29">
+			<textField>
+				<reportElement x="420" y="20" width="70" height="8" uuid="09e9fea9-3450-498e-b311-dc57042219d6"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página  " +  $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="4" y="20" width="100" height="8" uuid="ceefc1da-7ab4-491e-87ff-dcd3f67d5683"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Data: " +   new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(new Date().getTime() - 1* 24 * 60 * 60 * 1000)]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="20" width="555" height="9" forecolor="#030203" backcolor="#FFFCFE" uuid="4e54cbff-1edc-488a-97a7-ddfaca15b5c1"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="192" y="20" width="210" height="8" uuid="0cdc0823-2fe5-4671-90b0-e59c15d11223"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Usuário: " + $P{USUARIO}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="492" y="20" width="62" height="8" uuid="8c226ddb-379c-4c0d-ace4-66eb4b0d46a0"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" de "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="19">
+			<textField evaluationTime="Report">
+				<reportElement x="0" y="0" width="100" height="8" uuid="4f6996f8-10ab-4d69-853d-3e93ec943d1d"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Registros encontrados:  " + $V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="420" y="10" width="70" height="8" uuid="45b65bba-a853-4f01-b749-0e4ad477d7d9"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página  " +  $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="4" y="10" width="100" height="8" uuid="ae17c035-c7d7-4d55-8f69-5d00d645ec18"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Data: " +   new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(new Date().getTime() - 1* 24 * 60 * 60 * 1000)]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="10" width="555" height="9" forecolor="#030203" backcolor="#FFFCFE" uuid="be5cbf9d-a4bc-4ea1-a573-02510687b598"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="192" y="10" width="210" height="8" uuid="a84b62f1-4533-4d4d-8e0f-e8fcce3586e0"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Usuário: " + $P{USUARIO}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="492" y="10" width="62" height="8" uuid="fd7e96ee-37be-4f77-895c-efe5042a29c7"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" de "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>

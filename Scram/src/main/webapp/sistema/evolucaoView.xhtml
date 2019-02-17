@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template/layoutBase.xhtml">
+	<ui:define name="content">
+
+		<p:tabView id="tbview-viewFichaAtendimento"  style="width:auto;height:auto;margin:auto;" >
+			<p:tab id="tb-consultaFichaAtendimento" title="Consultar Fichas de Atendmento" >
+				<h:form style="margin:autotext-align:center;" id="form-consulta">
+					<h:panelGrid id="panelGrid-campos-form" columns="9" cellpadding="5">
+
+						<p:outputLabel value="Nome da Usuária:" for="fichaAtendimentoFindNomeUsuaria" />
+						<p:inputText id="fichaAtendimentoFindNomeUsuaria"
+							style="width:215px;height:11px;" maxlength="70"
+							value="#{viewEvolucaoController.fichaAtendimentoFind.usuaria.nome}"/>
+					
+						<p:outputLabel value="CPF da Usuária:" for="fichaAtendimentoFindCpfUsuaria" 
+							style="margin-left:25px;"/>
+						<p:inputText id="fichaAtendimentoFindCpfUsuaria"
+							style="width:90px;height:11px;" maxlength="14"
+							value="#{viewEvolucaoController.fichaAtendimentoFind.usuaria.cpf}" 
+							onkeydown="javascript: fMasc( this, mCPF );"/>
+
+						<p:commandButton value="Pesquisar" style="height:23px;"
+							id="commandButton-fichaAtendimentoViewFind" icon="ui-icon-search"
+							actionListener="#{viewEvolucaoController.findFichaAtendimento}"
+							update="dataTable-fichaAtendimentoList"  />
+					</h:panelGrid>
+					
+					<p:dataTable id="dataTable-fichaAtendimentoList" var="fichaAtendimento"
+						value="#{viewEvolucaoController.fichaAtendimentoList}" rows="15"
+						paginator="true"
+                 		paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+						style="width:100%;" emptyMessage="Nenhum Registro Encontrado"
+						resizableColumns="true" >
+
+						<f:facet name="header">
+     				       Fichas de Atendimento
+      				    </f:facet>
+      				    
+						<p:column headerText="Código" sortBy="#{fichaAtendimento.id}" style="text-align:center;" width="5%">
+							<h:outputText value="#{fichaAtendimento.id}" />
+						</p:column>
+
+						<p:column headerText="Data" sortBy="#{fichaAtendimento.dataFichaAtendimento}" style="text-align:center;"  width="5%">
+							<h:outputText value="#{fichaAtendimento.dataFichaAtendimento}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+					
+						<p:column headerText="Usuária" sortBy="#{fichaAtendimento.usuaria.nome}" style="text-align:center;" >
+							<h:outputText value="#{fichaAtendimento.usuaria.toDetail}" />							
+						</p:column>
+												
+						<p:column headerText="Denunciado" sortBy="#{fichaAtendimento.denunciado.nome}" style="text-align:center;" >
+							<h:outputText value="#{fichaAtendimento.denunciado.toDetail}" />							
+						</p:column>
+
+						<p:column headerText="Grau de Parentesco" sortBy="#{fichaAtendimento.grauParentescoDenunciado}" style="text-align:center;" >
+							<h:outputText value="#{fichaAtendimento.grauParentescoDenunciado}" />							
+						</p:column>
+						
+						<p:column headerText="Tipo Violência" sortBy="#{fichaAtendimento.tipoViolenciaDetail}" width="20%" style="text-align:center;">
+							<h:outputText value="#{fichaAtendimento.tipoViolenciaDetail}" />
+						</p:column>
+
+						<p:column style="text-align: center;" width="5%;" headerText="Ações" exportable="false">
+							<p:commandButton id="btnDetalharFichaAtendimento"
+								style="height: 20px;width: 25px;margin:-2px;" update=":panel-dadosFichaAtendimento"
+								title="Editar" icon="ui-icon-search" oncomplete="PF('dialogFichaAtendimento').show();"
+								action="#{viewEvolucaoController.detalharFichaAtendimento}" process="@this">
+								<f:setPropertyActionListener value="#{fichaAtendimento.id}" target="#{viewEvolucaoController.fichaAtendimentoIdSelecionado}" />
+							</p:commandButton>
+						</p:column>
+						
+					    <f:facet name="footer">
+      				       	 <div style="float:left;padding-top: 7px;">
+				               <h:commandLink>
+									<p:graphicImage url="/resources/imagens/xls_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para Excel" />
+				                    <p:dataExporter type="xls" target="dataTable-fichaAtendimentoList" encoding="ISO-8859-1" options="#{exportaDocumentoCustom.excelOpt}"  fileName="fichasAtendimento" />
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+				                    <p:graphicImage url="/resources/imagens/pdf_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para PDF" />
+				                    <p:dataExporter type="pdf" target="dataTable-fichaAtendimentoList" fileName="fichasAtendimento" encoding="ISO-8859-1" preProcessor="#{exportaDocumentoCustom.preProcessPDF}"  options="#{exportaDocumentoCustom.pdfOpt}"/>
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+									<p:graphicImage url="/resources/imagens/csv_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para CSV" />
+				                    <p:dataExporter type="csv" target="dataTable-fichaAtendimentoList" encoding="ISO-8859-1" fileName="fichasAtendimento"/>
+				                </h:commandLink>		 
+			            	</div>
+			      		 </f:facet>
+					</p:dataTable>
+				</h:form>
+			</p:tab>
+		</p:tabView>
+		
+		<p:dialog header="Dados da Ficha de Atendimento" id="dialogFichaAtendimento" widgetVar="dialogFichaAtendimento" closable="true">
+			<p:panel id="panel-dadosFichaAtendimento"  style="width:640px;">			
+				
+				<h:panelGrid id="panelGrid-viewFichaAtendimentoCod" columns="6" cellpadding="2" >
+					<p:outputLabel value="Código:" style="font-weight: bold;" for="outputTextFichaAtendimentoId" />
+					<p:outputLabel id="outputTextFichaAtendimentoId" value="#{viewEvolucaoController.fichaAtendimentoView.id}" />				
+				
+					<p:outputLabel value="Processo:" style="font-weight: bold;margin-left: 40px;" for="outputTextFichaAtendimentoProcesso" />
+					<p:outputLabel id="outputTextFichaAtendimentoProcesso" value="#{viewEvolucaoController.fichaAtendimentoView.processo}" />
+									
+					<p:outputLabel value="Data:" style="font-weight: bold;margin-left: 40px;" for="outputTextFichaAtendimentoData" />
+					<p:outputLabel id="outputTextFichaAtendimentoData" value="#{viewEvolucaoController.fichaAtendimentoView.dataFichaAtendimento}"  converter="dateConverter" />				
+				</h:panelGrid>
+				
+				<h:panelGrid id="panelGrid-viewFichaAtendimentoTipoViolencia" columns="2" cellpadding="2" >
+					<p:outputLabel value="Tipo Violência:" style="font-weight: bold;" for="outputTextFichaAtendimentoTipoViolencia" />
+					<p:outputLabel id="outputTextFichaAtendimentoTipoViolencia" value="#{viewEvolucaoController.fichaAtendimentoView.tipoViolenciaDetail}" />
+				</h:panelGrid>
+
+				<h:panelGrid id="panelGrid-viewFichaAtendimentoUsuaria" columns="2" cellpadding="2" >
+					<p:outputLabel value="Usuária:" style="font-weight: bold;" for="outputTextFichaAtendimentoUsuaria" />
+					<p:outputLabel id="outputTextFichaAtendimentoUsuaria" value="#{viewEvolucaoController.fichaAtendimentoView.usuaria.toDetail}" />
+				</h:panelGrid>
+
+				<h:panelGrid id="panelGrid-viewFichaAtendimentoDenunciado" columns="2" cellpadding="2" >
+					<p:outputLabel value="Denunciado:" style="font-weight: bold;" for="outputTextFichaAtendimentoDenunciado" />
+					<p:outputLabel id="outputTextFichaAtendimentoDenunciado" value="#{viewEvolucaoController.fichaAtendimentoView.denunciado.toDetail}" />
+				</h:panelGrid>
+
+				<h:panelGrid id="panelGrid-viewFichaAtendimentoGrauDenunciado" columns="2" cellpadding="2" >
+					<p:outputLabel value="Grau de Parentesco:" style="font-weight: bold;" for="outputTextFichaAtendimentoGrauDenunciado" />
+					<p:outputLabel id="outputTextFichaAtendimentoGrauDenunciado" value="#{viewEvolucaoController.fichaAtendimentoView.grauParentescoDenunciado}" />
+				</h:panelGrid>
+				
+				<p:tabView id="tbview-viewFichaAtendimentoDadosOpcionais" activeIndex="#{viewEvolucaoController.tabIndexViewFichaAtendimentoDados}"
+							 style="width:auto;height:auto;margin:auto;min-height: 180px;margin-top: 5px;">
+						
+							<p:tab id="panel-viewFichaAtendimentoReferenciada" title="Referenciada" >
+								 <h:panelGrid id="panelGrid-viewFichaAtendimentoReferenciada" columns="2" cellpadding="3">
+										<p:outputLabel value="Serviço:" for="input-fichaAtendimentoViewRefServico" />								
+										<p:outputLabel id="input-fichaAtendimentoViewRefServico" 
+											value="#{viewEvolucaoController.fichaAtendimentoView.referenciadaServico}"/>
+										
+										<p:outputLabel value="Observação:" for="input-fichaAtendimentoViewRefServicoObs" />
+										<p:inputTextarea  id="input-fichaAtendimentoViewRefServicoObs" rows="4" cols="80" readonly="true" 
+												style="height:67px;" autoResize="false"											
+												value="#{viewEvolucaoController.fichaAtendimentoView.referenciadaServicoObs}"/>
+								</h:panelGrid>								
+							</p:tab>
+
+							<p:tab id="panel-viewFichaAtendimentoDocEncaminhamento" title="Documento Encaminhamento" 
+							 		 style="margin-top:10px;">
+								 <h:panelGrid id="panelGrid-viewFichaAtendimentoDocEncaminhamento" columns="2" cellpadding="3">
+										<p:outputLabel value="Documento:" for="input-fichaAtendimentoViewDocEncaminhamento" />	
+										<p:outputLabel id="input-fichaAtendimentoViewDocEncaminhamento"
+											value="#{viewEvolucaoController.fichaAtendimentoView.documentoEncaminhamento}"/>
+										
+										<p:outputLabel value="Observação:" for="input-fichaAtendimentoViewDocEncaminhamentoObs" />
+										<p:inputTextarea  id="input-fichaAtendimentoViewDocEncaminhamentoObs" rows="4" cols="80" 
+												readonly="true" style="height:67px;" autoResize="false"
+												value="#{viewEvolucaoController.fichaAtendimentoView.documentoEncaminhamentoObs}"/>
+								</h:panelGrid>								
+							</p:tab>
+							
+							<p:tab id="panel-viewFichaAtendimentoMotivo" title="Motivo da Procura" 
+							 		 style="margin-top:10px;">
+								<h:panelGrid id="panelGrid-viewFichaAtendimentoMotivo" columns="2" cellpadding="3">
+										<p:outputLabel value="Motivo:" for="input-fichaAtendimentoViewMotivo" />	
+										<p:inputTextarea  id="input-fichaAtendimentoViewMotivo" rows="4" cols="80" 
+												style="margin-left: 29px;height:67px;" autoResize="false" readonly="true"
+												value="#{viewEvolucaoController.fichaAtendimentoView.motivoEncaminhamento}"/>
+								</h:panelGrid>
+							</p:tab>
+
+							<p:tab id="panel-viewFichaAtendimentoProvidencia" title="Providência" 
+							 		 style="margin-top:10px;">
+								<h:panelGrid id="panelGrid-viewFichaAtendimentoProvidencia" columns="2" cellpadding="3">
+										<p:outputLabel value="Providência:" for="input-fichaAtendimentoViewProvidencia" />	
+										<p:inputTextarea  id="input-fichaAtendimentoViewProvidencia" rows="4" cols="80" 
+												style="margin-left: 3px;height:67px;" autoResize="false" readonly="true"
+												value="#{viewEvolucaoController.fichaAtendimentoView.providencia}"/>
+								</h:panelGrid>
+							</p:tab>
+			</p:tabView>		
+			<p:panel id="panel-Evolucao"  style="width:610px;margin-top: 5px;"  header="Evolução"	>
+				<h:form style="margin:autotext-align:center;" id="form-consultaEvolucao">
+				 <h:panelGrid id="panelGrid-EvolucaoTable" columns="1" cellpadding="1">
+					<p:dataTable id="dataTable-evolucaofichaAtendimento" var="evolucao"
+						value="#{viewEvolucaoController.evolucaoFichaAtendimentoList}" 
+						rows="4"  paginator="true"  paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+						style="width:100%;" emptyMessage="Nenhum Registro Encontrado" resizableColumns="true" >
+				
+						<p:column headerText="Data" sortBy="#{evolucao.data}" style="text-align:center;"  width="10%">
+							<h:outputText value="#{evolucao.data}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+					
+						<p:column headerText="Responsável" sortBy="#{evolucao.usuario.nome}" style="text-align:center;" >
+							<h:outputText value="#{evolucao.usuario.nome}" />							
+						</p:column>
+												
+						<p:column headerText="Assunto" sortBy="#{evolucao.assunto}" style="text-align:center;" >
+							<h:outputText value="#{evolucao.assunto}" />							
+						</p:column>
+						
+						<p:column style="text-align: center;" width="5%;" headerText="Ações" exportable="false">
+							<p:commandButton id="btnDetalharEvolucaoFichaAtendimento"
+								style="height: 20px;width: 25px;margin:-2px;" update="dialogViewEvolucao"
+								title="Editar" icon="ui-icon-search"
+								action="#{viewEvolucaoController.detalharEvolucaoFichaAtendimento}" 
+								oncomplete="PF('dialogViewEvolucao').show();" process="@this">											
+								<f:setPropertyActionListener value="#{evolucao.id}" target="#{viewEvolucaoController.evolucaoFichaAtendimentoIdSelecionado}" />
+							</p:commandButton>
+						</p:column>
+						
+						  <f:facet name="footer">
+      				       	 <div style="float:left;padding-top: 7px;">
+				               <h:commandLink>
+									<p:graphicImage url="/resources/imagens/xls_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para Excel" />
+				                    <p:dataExporter type="xls" target="dataTable-evolucaofichaAtendimento" encoding="ISO-8859-1" options="#{exportaDocumentoCustom.excelOpt}"  fileName="evolucaoAtendimento" />
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+				                    <p:graphicImage url="/resources/imagens/pdf_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para PDF" />
+				                    <p:dataExporter type="pdf" target="dataTable-evolucaofichaAtendimento" fileName="evolucaoAtendimento" encoding="ISO-8859-1"
+				                     preProcessor="#{exportaDocumentoCustom.preProcessPDF}"  options="#{exportaDocumentoCustom.pdfOpt}"/>
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+									<p:graphicImage url="/resources/imagens/csv_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para CSV" />
+				                    <p:dataExporter type="csv" target="dataTable-evolucaofichaAtendimento" encoding="ISO-8859-1" fileName="evolucaoAtendimento"/>
+				                </h:commandLink>		 
+			            	</div>
+			      		 </f:facet>
+						
+						
+					</p:dataTable>
+				</h:panelGrid>
+			  </h:form>
+			</p:panel>
+				
+		</p:panel>
+		<center>
+			<h:panelGrid id="pamel-buttom" columns="2" 	cellpadding="3">					
+				<p:commandButton value="Fechar" type="button"   icon="ui-icon-close" onclick="PF('dialogFichaAtendimento').hide();" />					
+			</h:panelGrid>
+		</center>	
+	</p:dialog>
+	
+	<p:dialog header="Evolução - Ficha de Atendimento" id="dialogViewEvolucao" widgetVar="dialogViewEvolucao" closable="true">
+			<h:form style="margin:autotext-align:center;" id="form-viewEvolucao">
+				 <h:panelGrid id="panelGrid-viewEvoluca" columns="4" cellpadding="3">
+						<p:outputLabel value="Assunto:" for="inputText-evolucaoAssunto" />
+						<p:outputLabel id="inputText-evolucaoAssunto"  style="width:215px;margin-left: 11px;" maxlength="150"
+							value="#{viewEvolucaoController.evolucaoView.assunto}" />
+							
+						<p:outputLabel value="Data:" for="inputText-evolucaoData" 
+								style="width:110px;margin-left: 30px;"/>
+						 <p:outputLabel id="inputText-evolucaoData"
+				        	value="#{viewEvolucaoController.evolucaoView.data}"
+				        	size="12" converter="dateConverter"/>
+	   			</h:panelGrid>	
+				 <h:panelGrid id="panelGrid-viewEvolucaDescricao" columns="4" cellpadding="3">
+					<p:outputLabel value="Descricao:" for="inputText-evolucaoDescricao" 
+							style="width:110px;"/>
+				 	<p:inputTextarea  id="inputText-evolucaoDescricao" rows="20" cols="90" 
+									readonly="true" style="height:260px;" autoResize="false"
+									value="#{viewEvolucaoController.evolucaoView.descricao}"/>
+				</h:panelGrid>
+				<center>
+					<h:panelGrid id="pamel-buttomViewEvolucao" columns="2" 	cellpadding="3">
+						<p:commandButton id="btnFechardialogViewEvolucao"
+							value="Fechar" icon="ui-icon-close"
+							update="tbview-viewFichaAtendimento"  oncomplete="PF('dialogViewEvolucao').hide();"/>
+						
+					</h:panelGrid>
+				</center>		
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

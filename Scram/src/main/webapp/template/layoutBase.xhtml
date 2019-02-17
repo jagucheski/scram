@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<body style="background-color: #f3f3f3;">
+
+	<h:head>
+		<h:outputStylesheet library="css" name="default.css" />
+		<h:outputStylesheet library="css" name="theme.css" />
+		<h:outputScript name="locale-primefaces.js" library="js"/>
+		<h:outputScript name="imputMasc.js" library="js"/>
+		<h:outputScript name="print.js" library="js"/>
+		<h:outputScript name="download.js" library="js"/>
+		<title>-SCRAM- Parobé/RS</title>
+	</h:head>
+
+
+	<div id="header" style="margin-top: 20px;">
+		<ui:include src="header.xhtml" />
+	</div>
+
+	<div id="content" style="margin-top: 10px;">
+		<ui:insert name="content">
+		</ui:insert>
+	</div>
+
+	<div id="footer"
+		style="position: fixed; bottom: 0; width: 100%; background-color: #f3f3f3; margin-bottom: 5px;">
+		<ui:include src="footer.xhtml" />
+	</div>
+
+</body>
+
+</html>

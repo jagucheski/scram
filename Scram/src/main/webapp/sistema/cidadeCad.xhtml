@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+</h:head>
+
+<ui:composition template="/template/layoutBase.xhtml">
+	<ui:define name="content">
+
+		<p:tabView id="tbview-consultaCidade"
+			tyle="width:600px;margin:auto;">
+			<p:tab id="tb-consultaCidade" title="Consulta de Cidade">
+
+				<h:form style="margin:auto;margin-left:2%;" id="form-consulta">
+
+					<p:dataTable id="dataTable-registros" var="cidade"
+						value="#{cadCidadeController.cidades}" rows="20" paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15,20" style="width:98%;">
+
+						<p:column headerText="Código" style="text-align:center;">
+							<h:outputText value="#{cidade.idCidade}" />
+						</p:column>
+
+						<p:column headerText="Nome">
+							<h:outputText value="#{cidade.nome}" />
+						</p:column>
+
+						<p:column headerText="UF" style="text-align:center;">
+							<h:outputText value="#{cidade.uf}" />
+						</p:column>
+					</p:dataTable>
+
+				</h:form>
+			</p:tab>
+		</p:tabView>
+
+	</ui:define>
+</ui:composition>
+</html>
