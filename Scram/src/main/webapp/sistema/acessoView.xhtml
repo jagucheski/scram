@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template/layoutBase.xhtml">
+	<ui:define name="content">
+
+		<p:tabView id="tbview-acessoUsuario"
+			style="width:auto;height:auto;margin:auto;" >
+			<p:tab id="tb-consultaAcessoUsuario" title="Consultar Acesso de Usuários" >
+				<h:form style="margin:autotext-align:center;" id="form-consulta">
+					<h:panelGrid id="panelGrid-campos-form" columns="9" cellpadding="5">
+
+						<p:outputLabel value="Nome do Usuário:" for="inputText-usuarioFindNome" />
+						<p:inputText id="inputText-usuarioFindNome"
+							style="width:300px;height:11px;" maxlength="70"
+							value="#{viewAcessoUsuarioController.acessoUsuarioFind.usuario.nome}" />
+
+						<p:commandButton value="Pesquisar" style="height:23px;"
+							id="commandButton-acessoUsuarioFind" icon="ui-icon-search"
+							actionListener="#{viewAcessoUsuarioController.findAcessoUsuario}"
+							update="dataTable-acessoUsuarioList" />						
+					</h:panelGrid>
+					
+					<p:dataTable id="dataTable-acessoUsuarioList" var="acesso"
+						value="#{viewAcessoUsuarioController.acessoUsuarioList}" rows="15"
+						paginator="true"
+                 		paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+						style="width:100%;" emptyMessage="Nenhum Registro Encontrado"
+						resizableColumns="true" >
+
+						<f:facet name="header">
+     				       Acesso de Usuários
+      				    </f:facet>
+						<p:column headerText="Código" sortBy="#{acesso.usuario.id}" style="text-align:center;" width="5%">
+							<h:outputText value="#{acesso.id}" />
+						</p:column>
+
+						<p:column headerText="Usuário" sortBy="#{acesso.usuario.nome}">
+							<h:outputText value="#{acesso.usuario.nome}" />
+						</p:column>
+
+						<p:column headerText="CPF" sortBy="#{acesso.usuario.cpf}" style="text-align:center;">
+							<h:outputText value="#{acesso.usuario.cpf}" />
+						</p:column>
+
+						<p:column headerText="Tipo Acesso" sortBy="#{acesso.tipo}" style="text-align:center;">
+							<h:outputText value="#{acesso.tipo}" />
+						</p:column>
+
+						<p:column headerText="Data" sortBy="#{acesso.dataAcesso}" style="text-align:center;">
+							<h:outputText value="#{acesso.dataAcesso}"/>
+						</p:column>
+
+						 <f:facet name="footer">
+      				       	 <div style="float:left;padding-top: 7px;">
+				               <h:commandLink>
+									<p:graphicImage url="/resources/imagens/xls_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para Excel" />
+				                    <p:dataExporter type="xls" target="dataTable-acessoUsuarioList" encoding="ISO-8859-1" options="#{exportaDocumentoCustom.excelOpt}"  fileName="scram_acessousuarios" />
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+
+				                    <p:graphicImage url="/resources/imagens/pdf_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para PDF" />
+				                    <p:dataExporter type="pdf" target="dataTable-acessoUsuarioList" fileName="scram_acessousuarios" encoding="ISO-8859-1" preProcessor="#{exportaDocumentoCustom.preProcessPDF}"  options="#{exportaDocumentoCustom.pdfOpt}"/>
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+									<p:graphicImage url="/resources/imagens/csv_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para CSV" />
+				                    <p:dataExporter type="csv" target="dataTable-acessoUsuarioList" encoding="ISO-8859-1" fileName="scram_acessousuarios"/>
+				                </h:commandLink>		 
+			            	</div>
+			      		 </f:facet>
+
+					</p:dataTable>
+				</h:form>
+			</p:tab>
+		</p:tabView>
+		
+	</ui:define>
+</ui:composition>
+</html>

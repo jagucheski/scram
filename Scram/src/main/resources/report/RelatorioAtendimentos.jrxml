@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RelatorioFichaAtendimento" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="775fa8ca-057f-4071-946c-73f0cee76af7">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ScramSQL"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="591"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="395"/>
+	<parameter name="USUARIO" class="java.lang.String"/>
+	<parameter name="ANO" class="java.lang.String"/>
+	<parameter name="CONTEXT" class="java.lang.String"/>
+	<parameter name="TOTALATENDIMENTOS" class="java.lang.String" isForPrompting="false"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+to_char(data, 'MM/YYYY') as mes_ano,
+COUNT(data) AS atendimento
+FROM evolucao
+where to_char(data, 'YYYY') = '2019' 
+GROUP BY mes_ano
+ORDER BY mes_ano]]>
+	</queryString>
+	<field name="mes_ano" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="mes_ano"/>
+	</field>
+	<field name="atendimento" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="atendimento"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="49" splitType="Stretch">
+			<staticText>
+				<reportElement x="120" y="2" width="310" height="20" uuid="4f5db22a-07a6-47e2-a734-1352ca9d438a"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Scram - Sistema do Centro de Referência de Atendimento à Mulher ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="204" y="22" width="170" height="12" uuid="276c8127-6332-43b0-9de5-fe500695cb8e"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Relatório de Atendimentos]]></text>
+			</staticText>
+			<rectangle radius="5">
+				<reportElement mode="Transparent" x="2" y="1" width="551" height="41" uuid="effd2b55-39fd-4b60-b557-f25065b5b388"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+			<image>
+				<reportElement x="40" y="2" width="39" height="39" uuid="2f2a9612-c00f-4f9c-a4cf-3b7a3971951e"/>
+				<imageExpression><![CDATA[$P{CONTEXT}.toString()+"resources/imagens/logo_cram.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<line>
+				<reportElement x="1" y="24" width="551" height="1" uuid="46c33865-2b22-4e3e-9a74-d698e7fe9868"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="1" y="11" width="551" height="1" uuid="5f0ccf29-3f8d-4d51-b996-26ca3e594e81"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="258" y="13" width="84" height="10" uuid="69ec1cd9-b9a1-495e-a3fd-9b935d9e94a6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0f30f2f5-3181-4065-b6fe-0f3749f20b6d"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Qtde Atendimentos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="207" y="13" width="48" height="10" uuid="3e0cb415-8400-4759-ad50-66e807d681fe">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="68674452-ee57-4ee8-8d42-c439cf5706c9"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Mês]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="6" y="0" width="120" height="10" uuid="6fe09ac7-8e9f-4f8e-bc8b-757a280d94c1"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Período de: " + $P{ANO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement x="197" y="0" width="69" height="10" uuid="5e4d2762-0f5b-4072-b6a2-ceb76209e134">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="69a1254a-8497-4492-b15f-dd8be13d65d4"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mes_ano}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="257" y="0" width="45" height="10" uuid="bb95e292-d5cd-41de-9535-9eb46c62635c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d9191afe-5468-4289-8b9a-b8ba3af06470"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{atendimento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="244">
+			<textField>
+				<reportElement x="230" y="2" width="72" height="10" uuid="fbfcc0f9-d653-4473-92cd-98651927a5e1"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total: " + $P{TOTALATENDIMENTOS}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="255" y="1" width="50" height="1" uuid="fbf1e1e8-392c-472d-a758-86c92828dd07"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="12">
+			<textField>
+				<reportElement x="420" y="4" width="70" height="8" uuid="09e9fea9-3450-498e-b311-dc57042219d6"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página  " +  $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="4" y="4" width="100" height="8" uuid="ceefc1da-7ab4-491e-87ff-dcd3f67d5683"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Data: " +   new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(new Date().getTime() - 1* 24 * 60 * 60 * 1000)]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="3" width="555" height="9" forecolor="#030203" backcolor="#FFFCFE" uuid="4e54cbff-1edc-488a-97a7-ddfaca15b5c1"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="192" y="4" width="210" height="8" uuid="0cdc0823-2fe5-4671-90b0-e59c15d11223"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Usuário: " + $P{USUARIO}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="492" y="4" width="62" height="8" uuid="8c226ddb-379c-4c0d-ace4-66eb4b0d46a0"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" de "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<lineChart>
+				<chart evaluationTime="Report" theme="default">
+					<reportElement x="69" y="-213" width="411" height="195" uuid="8a6f2f75-9338-4b61-b87b-6236b9fc07fd"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Atendimentos"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{mes_ano}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{atendimento}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisLabelExpression><![CDATA["Mês"]]></categoryAxisLabelExpression>
+					<categoryAxisFormat>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" verticalTickLabels="true" axisLineColor="#000000"/>
+					</categoryAxisFormat>
+					<valueAxisLabelExpression><![CDATA["Qtde. Atendimentos"]]></valueAxisLabelExpression>
+					<valueAxisFormat>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</pageFooter>
+</jasperReport>

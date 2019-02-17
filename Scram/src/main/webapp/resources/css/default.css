@@ -1,0 +1,55 @@
+.ui-widget {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+.ui-widget .ui-widget {
+	font-size: 12px;
+}
+
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
+	{
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}
+
+.font_footer {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	text-align: center;
+	color: #4f4f4f;
+}
+
+.font_titulo_sistema {
+	font-family: Arial, sans-serif;
+	font-size: 20px;
+	margin-top: 100px;
+	text-align: center;
+	color: #4f4f4f;
+}
+
+.font_sub_titulo_sistema {
+	font-family: Arial, sans-serif;
+	margin-top: 5px;
+	font-size: 15px;
+	text-align: center;
+	color: #4f4f4f;
+	 	
+}
+
+.font_titulo_error {
+	font-family: Arial, sans-serif;
+	font-size: 130px;
+	margin-top: 100px;
+	text-align: center;
+	color: #7e7e7e;
+}
+
+.font_texto_error {
+	font-family: Arial, sans-serif;
+	margin-top: 55px;
+	font-size: 25px;
+	text-align: center;
+	color: #7e7e7e;
+	background-color:#f3f3f3;"
+}

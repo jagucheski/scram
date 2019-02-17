@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template/layoutBase.xhtml">
+	<ui:define name="content">
+		<p:tabView id="tbviewRelatorioFichaAtendimento"
+			style="width:auto;height:auto;margin:auto;">
+
+			<p:tab id="tbFindRelatorioFichaAtendimento" title="Relatório de Ficha de Atendimento">
+				<h:form id="formFindRelatorioFichaAtendimento">
+					<p:panel id="panelFindRelatorioFichaAtendimento" style="width:100%;">
+						<p:messages id="messagesFindRelatorioFichaAtendimento"  style="width:618px;" showDetail="true" autoUpdate="true" closable="true" />
+
+							<h:panelGrid id="panelGridTipoViolencia" columns="3" cellpadding="3">
+									<p:outputLabel value="Tipo Violência:" />	
+									<h:selectManyCheckbox id="inputTipoViolencia" layout="lineDirection"										
+									    value="#{reportBean.fichaAtendimentoFind.tiposViolencia}">									    
+							            <f:selectItems value="#{tipoViolenciaListener.tiposViolencia}" />
+							        </h:selectManyCheckbox>
+							        <p:commandButton id="btnTipoViolenciaHelp" 
+										style="height: 20px !important;margin-left: 17px;" 
+										title="Tipos de Violência" icon="ui-icon-help" 
+										onclick="PF('dialogTipoViolencia').show();"	/>
+							</h:panelGrid>
+
+							<h:panelGrid id="panelGridFindRelatorioFichaAtendimento" columns="5">
+								<h:outputLabel for="inputTextInicioPeriodo" value="* Período de:"/>
+								<p:calendar id="inputTextInicioPeriodo" value="#{reportBean.inicioPeriodo}" 
+											locale="pt" showOn="button" navigator="true" mask="true"  pattern="dd/MM/yyyy" size="12"/>	
+																							
+								<h:outputLabel for="inputTextFimPeriodo" value="até:" style="margin-left:10px !important;"/>
+								<p:calendar id="inputTextFimPeriodo" value="#{reportBean.fimPeriodo}" style="margin-left:10px !important;"
+												locale="pt" showOn="button" navigator="true" mask="true"  pattern="dd/MM/yyyy" size="12"/>		
+	
+								<h:panelGrid id="panelGridBtnGerarRelatorioFichaAtendimento" columns="1" cellpadding="3">
+									<h:commandLink style="margin-left:35px !important; height:50px;" onclick="PrimeFaces.monitorDownload(startDownload, stopDownload);">
+										<p:fileDownload value="#{reportBean.relatorioFichaAtendimentos}" />
+										<p:graphicImage url="/resources/imagens/pdf.png" style="height:50px;" title="Gerar Relatório em PDF" />
+									</h:commandLink>
+									<p:outputLabel style="margin-left: 16px;" value="Gerar Relatório" />
+								</h:panelGrid>
+						
+							</h:panelGrid>
+					</p:panel>
+				</h:form>
+			</p:tab>
+		</p:tabView>
+
+<!--  ********************DIALOG PARA APRESENTAR OS TIPOS DE VIOLENCIA********************  -->
+		<p:dialog header="Tipos de Violência - Lei nº 11.340, de 7 de Agosto de 2006."
+			id="dialogTipoViolencia" widgetVar="dialogTipoViolencia" closable="true" resizable="false">
+			<h:panelGrid id="panel-tipoVilencia" style="width:800px;">
+				<h:panelGrid id="panelGrid-tipoViolencia"
+					style="text-align: justify;" columns="1" cellpadding="1">
+					<p:outputLabel value="Art. 7º  São formas de violência doméstica e familiar contra a mulher, entre outras:" />
+					<p>
+						<b>I - a violência física,</b> entendida como qualquer conduta que
+						ofenda sua integridade ou saúde corporal;
+					</p>
+					<p>
+						<b>II - a violência psicológica,</b> entendida como qualquer
+						conduta que lhe cause dano emocional e diminuição da autoestima ou
+						que lhe prejudique e perturbe o pleno desenvolvimento ou que vise
+						degradar ou controlar suas ações, comportamentos, crenças e
+						decisões, mediante ameaça, constrangimento, humilhação,
+						manipulação, isolamento, vigilância constante, perseguição
+						contumaz, insulto, chantagem, violação de sua intimidade,
+						ridicularização, exploração e limitação do direito de ir e vir ou
+						qualquer outro meio que lhe cause prejuízo à saúde psicológica e à
+						autodeterminação; (Redação dada pela Lei nº 13.772, de 2018)
+					</p>
+					<p>
+						<b>II - a violência sexual,</b> entendida como qualquer conduta
+						que a constranja a presenciar, a manter ou a participar de relação
+						sexual não desejada, mediante intimidação, ameaça, coação ou uso
+						da força; que a induza a comercializar ou a utilizar, de qualquer
+						modo, a sua sexualidade, que a impeça de usar qualquer método
+						contraceptivo ou que a force ao matrimônio, à gravidez, ao aborto
+						ou à prostituição, mediante coação, chantagem, suborno ou
+						manipulação; ou que limite ou anule o exercício de seus direitos
+						sexuais e reprodutivos;
+					</p>
+					<p>
+						<b>IV - a violência patrimonial,</b> entendida como qualquer
+						conduta que configure retenção, subtração, destruição parcial ou
+						total de seus objetos, instrumentos de trabalho, documentos
+						pessoais, bens, valores e direitos ou recursos econômicos,
+						incluindo os destinados a satisfazer suas necessidades;
+					</p>
+					<p>
+						<b>V - a violência moral,</b> entendida como qualquer conduta que
+						configure calúnia, difamação ou injúria.
+					</p>
+				</h:panelGrid>
+				
+			</h:panelGrid>
+				<center>
+					<h:panelGrid id="pamel-closeTipoViolencia" columns="1" cellpadding="1">
+						<p:commandButton value="Fechar" type="button" icon="ui-icon-close" onclick="PF('dialogTipoViolencia').hide();" />				
+					</h:panelGrid>
+				</center>	
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>
+</html>

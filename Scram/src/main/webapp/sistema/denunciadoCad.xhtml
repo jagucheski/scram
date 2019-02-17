@@ -1,0 +1,460 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template/layoutBase.xhtml">
+	<ui:define name="content">
+
+
+	<p:tabView id="tbview-cadDenunciado" activeIndex="#{cadDenunciadoController.tabIndexCadDenunciado}"
+			style="width:auto;height:auto;margin:auto;"  effect="blind">
+			<p:tab id="tb-consultaDenunciado" title="Consultar Denunciados" >
+				<h:form style="margin:autotext-align:center;" id="form-consulta">
+					<h:panelGrid id="panelGrid-campos-form" columns="9" cellpadding="5">
+
+						<p:outputLabel value="Nome:" for="inputText-denunciadoFindNome" />
+						<p:inputText id="inputText-denunciadoFindNome"
+							style="width:300px;height:11px;" maxlength="70"
+							value="#{cadDenunciadoController.denunciadoFind.nome}" />
+
+						<p:outputLabel value="CPF:" for="inputText-denunciadoFindCpf" />
+						<p:inputText id="inputText-denunciadoFindCpf"
+							style="width:90px;height:11px;" maxlength="14"
+							value="#{cadDenunciadoController.denunciadoFind.cpf}"
+							onkeydown="javascript: fMasc( this, mCPF );" />
+
+						<p:commandButton value="Pesquisar" style="height:23px;"
+							id="commandButton-denunciadoCadFind" icon="ui-icon-search"
+							actionListener="#{cadDenunciadoController.findDenunciado}"
+							update="dataTable-denunciadoList" />
+					</h:panelGrid>
+					
+					<p:dataTable id="dataTable-denunciadoList" var="denunciado"
+						value="#{cadDenunciadoController.denunciadoList}" rows="15"
+						paginator="true"
+                 		paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+						style="width:100%;" emptyMessage="Nenhum Registro Encontrado"
+						resizableColumns="true" >
+
+						<f:facet name="header">
+     				       Denunciados
+      				    </f:facet>
+      				    
+						<p:column headerText="Código" sortBy="#{denunciado.id}" style="text-align:center;" width="5%">
+							<h:outputText value="#{denunciado.id}" />
+						</p:column>
+
+						<p:column headerText="Nome" sortBy="#{denunciado.nome}">
+							<h:outputText value="#{denunciado.nome}" />
+						</p:column>
+
+						<p:column headerText="CPF" sortBy="#{denunciado.cpf}" style="text-align:center;">
+							<h:outputText value="#{denunciado.cpf}" />
+						</p:column>
+
+						<p:column headerText="RG" sortBy="#{denunciado.rg}" style="text-align:center;">
+							<h:outputText value="#{denunciado.rg}" />
+						</p:column>
+
+						<p:column headerText="Nasc." sortBy="#{denunciado.nascimento}" style="text-align:center;">
+							<h:outputText value="#{denunciado.nascimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Cidade" sortBy="#{denunciado.cidade.nome}" style="text-align:center;">
+							<h:outputText value="#{denunciado.cidade.nome}" />
+						</p:column>
+
+						<p:column headerText="Tel. Residencial" sortBy="#{denunciado.telefoneResidencial}" style="text-align:center;">
+							<h:outputText value="#{denunciado.telefoneResidencial}" />
+						</p:column>
+
+						<p:column headerText="Tel. Celular" sortBy="#{denunciado.telefoneCelular}" style="text-align:center;">
+							<h:outputText value="#{denunciado.telefoneCelular}" />
+						</p:column>
+
+						<p:column style="text-align: center;" width="5%;" headerText="Ações" exportable="false">
+							<p:commandButton id="btnDetalharDenunciado"
+								style="height: 20px;width: 25px;margin:-2px;" update=":tbview-cadDenunciado"
+								title="Editar" icon="ui-icon-search"
+								action="#{cadDenunciadoController.detalharDenunciado}" >
+								<f:setPropertyActionListener value="#{denunciado.id}" target="#{cadDenunciadoController.denunciadoIdSelecionado}" />
+							</p:commandButton>
+						</p:column>
+					    <f:facet name="footer">
+      				       	 <div style="float:left;padding-top: 7px;">
+				               <h:commandLink>
+									<p:graphicImage url="/resources/imagens/xls_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para Excel" />
+				                    <p:dataExporter type="xls" target="dataTable-denunciadoList" encoding="ISO-8859-1" options="#{exportaDocumentoCustom.excelOpt}"  fileName="denunciados" />
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+				                    <p:graphicImage url="/resources/imagens/pdf_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para PDF" />
+				                    <p:dataExporter type="pdf" target="dataTable-denunciadoList" fileName="denunciados" encoding="ISO-8859-1" preProcessor="#{exportaDocumentoCustom.preProcessPDF}"  options="#{exportaDocumentoCustom.pdfOpt}"/>
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+									<p:graphicImage url="/resources/imagens/csv_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para CSV" />
+				                    <p:dataExporter type="csv" target="dataTable-denunciadoList" encoding="ISO-8859-1" fileName="denunciados"/>
+				                </h:commandLink>		 
+			            	</div>
+			      		 </f:facet>
+					</p:dataTable>
+				</h:form>
+			</p:tab>
+			<p:tab id="tab-cadDenunciado" title="Cadastrar Denunciado" style="width:auto;height:auto;">
+			    	<h:form style="margin:autotext-align:center;" id="form-cadDenunciado">
+						<p:messages id="messagesCadDenunciado" style="width:618px;" showDetail="true" autoUpdate="true" closable="true" />
+							<p:panel id="panel-dadosDenunciado"  style="width:610px;" header="Dados da Denunciado" >
+       							 <h:panelGrid id="panelGrid-cadDenunciadoCod" columns="2" cellpadding="5">
+									<p:outputLabel value="Código:" for="inputText-denunciadoId" />
+									<p:inputText id="inputText-denunciadoId" disabled="true"
+										style="width:50px;margin-left:25px;text-align:center;"
+										value="#{cadDenunciadoController.denunciadoCadastro.id}" />
+       							 </h:panelGrid>	
+       							 
+       							 <h:panelGrid id="panelGrid-cadDenunciadoNome" columns="2" cellpadding="5">
+									<p:outputLabel value="Nome*:" for="inputText-denunciadoCadnome" />
+									<p:inputText id="inputText-denunciadoCadnome"
+										style="width:400px;margin-left:25px;" maxlength="55"
+										value="#{cadDenunciadoController.denunciadoCadastro.nome}"/>
+       							 </h:panelGrid>	
+		
+       							 <h:panelGrid id="panelGrid-cadDenunciadoCpf" columns="4" cellpadding="5">
+								 	<p:outputLabel value="CPF:" for="inputText-denunciadoCadcpf" />
+							     	<p:inputText id="inputText-denunciadoCadcpf"
+											style="width:110px;margin-left: 34px;" maxlength="14"
+											value="#{cadDenunciadoController.denunciadoCadastro.cpf}"
+											onkeydown="javascript: fMasc( this, mCPF );"/>
+		
+									 <p:outputLabel value="RG:" for="inputText-denunciadoCadRG" 
+											style="width:110px;margin-left: 126px;"/>
+									 <p:inputText id="inputText-denunciadoCadRG"
+											style="width:110px;" maxlength="14"
+											value="#{cadDenunciadoController.denunciadoCadastro.rg}"
+											onkeydown="javascript: fMasc( this, mNum );"/>									
+									</h:panelGrid>
+			
+								<h:panelGrid id="panelGrid-cadDenunciadoaNasc" columns="2" cellpadding="5">
+									<p:outputLabel value="Data Nasc.:" for="inputText-denunciadoCadNascimento"/>
+							        <p:calendar id="inputText-denunciadoCadNascimento" 
+							        	value="#{cadDenunciadoController.denunciadoCadastro.nascimento}"
+							        	size="12" showOn="button" navigator="true"  pattern="dd/MM/yyyy" mask="true" locale="pt" />
+								</h:panelGrid>
+									
+								<h:panelGrid id="panelGrid-endereco" columns="2" cellpadding="5">
+									<p:outputLabel value="Endereço:" for="inputText-denunciadoCadEndereco" />
+									<p:inputText id="inputText-denunciadoCadEndereco"
+										style="width:400px;margin-left: 10px;" maxlength="140"
+										value="#{cadDenunciadoController.denunciadoCadastro.endereco}" />
+								</h:panelGrid>	
+								
+								<h:panelGrid id="panelGrid-bairro" columns="2" cellpadding="5">
+									<p:outputLabel value="Bairro:" for="inputText-denunciadoCadBairro" />
+									<p:inputText id="inputText-denunciadoCadBairro"
+										style="width:400px;margin-left: 30px;" maxlength="140"
+										value="#{cadDenunciadoController.denunciadoCadastro.bairro}" />
+								</h:panelGrid>	
+								
+								<h:panelGrid id="panelGrid-cadDenunciadoCidade" columns="3"
+										cellpadding="5">
+									<p:outputLabel value="Cidade:" for="inputText-denunciadoCadCidade" />
+									<p:autoComplete id="inputText-denunciadoCadCidade"
+										style="margin-left: 24px;"
+										value="#{cadDenunciadoController.denunciadoCadastro.cidade}"
+										completeMethod="#{cadDenunciadoController.findCidadeAutoComplete}"
+										var="cidade" queryDelay="250" minQueryLength="3"
+										itemLabel="#{cidade.toDetail}" itemValue="#{cidade}"
+										converter="cidadeConverter" size="76">									
+									</p:autoComplete>
+									<p:commandButton id="btnFindCidade"
+										style="margin-left: -43px;" disabled="true" icon="ui-icon-search">									
+									</p:commandButton>
+								</h:panelGrid>													
+								
+							<p:spacer />
+								<p:tabView id="tbview-cadDenunciadoDadosOpcionais"	 activeIndex="#{cadDenunciadoController.tabIndexCadDenunciadoPerfis}"
+								 style="width:auto;height:auto;margin:auto;min-height: 180px;">
+								
+									<p:tab id="tb-cadDenunciadoperfilCultural" title="Perfil Cultural" >
+										<h:panelGrid id="panelGrid-cadDenunciadoEtnia" columns="4" cellpadding="5">
+								
+											<p:outputLabel value="Etnia*:" />								
+											<p:selectOneMenu id="denunciadoCadEtnia"
+												value="#{cadDenunciadoController.denunciadoCadastro.etnia}">
+												<f:selectItem itemLabel="Selecione..." itemValue=""/>  
+												<f:selectItems value="#{etniaListener.etnias}" />
+											</p:selectOneMenu>
+											
+											<p:outputLabel value="Religião*:" style="margin-left: 13px;"/>								
+											<p:selectOneMenu id="denunciadoCadReligiao"	
+												value="#{cadDenunciadoController.denunciadoCadastro.religiao}">
+												<f:selectItem itemLabel="Selecione..." itemValue=""/>
+												<f:selectItems value="#{religiaoListener.religioes}" />
+											</p:selectOneMenu>									
+											
+											<p:outputLabel value="Orientação Sexual*:" />								
+											<p:selectOneMenu id="denunciadoCadSexo" style="min-width: 113px;"
+												value="#{cadDenunciadoController.denunciadoCadastro.sexo}">
+												<f:selectItem itemLabel="Selecione..." itemValue=""/>
+												<f:selectItems value="#{sexoListener.sexos}" />
+											</p:selectOneMenu>										
+										</h:panelGrid>
+									</p:tab>
+									<p:tab id="tb-cadDenunciadoperfilProfissional" title="Perfil Profissional" >
+										<h:panelGrid id="panelGrid-perfilProfissional" columns="2" cellpadding="5">
+											<p:outputLabel value="Grau de Instrução*:" for="denunciadoCadGrauInstrucao" />
+											<p:selectOneMenu id="denunciadoCadGrauInstrucao"										
+												value="#{cadDenunciadoController.denunciadoCadastro.grauInstrucao}">
+												<f:selectItem itemLabel="Selecione..." itemValue=""/>
+												<f:selectItems value="#{grauInstrucaoListener.grausInstrucao}" />
+											</p:selectOneMenu>									
+											
+											<p:outputLabel value="Profissão:" for="inputText-denunciadoCadProfissiao"/>
+									        <p:inputText id="inputText-denunciadoCadProfissiao" maxlength="200"
+									        	style="width:403px;"
+									        	value="#{cadDenunciadoController.denunciadoCadastro.profissao}"/>
+										</h:panelGrid>
+									</p:tab>
+			
+									<p:tab id="tb-cadDenunciadoperfilSocial" title="Perfil Social" >
+										<h:panelGrid id="panelGrid-perfilSocial" columns="2" cellpadding="5">
+											<p:outputLabel value="Programa Social:" for="inputText-denunciadoCadProgSocial" />
+											<p:inputText id="inputText-denunciadoCadProgSocial"
+												style="width:390px;margin-left:23px;" maxlength="140"
+												value="#{cadDenunciadoController.denunciadoCadastro.programaSocial}" />
+										</h:panelGrid>
+									</p:tab>
+									
+									<p:tab id="tb-cadDenunciadoContato" title="Contato" >
+										<h:panelGrid id="panelGrid-telResidencial" columns="2" cellpadding="5">
+											<p:outputLabel value="Tel. Residencial:"
+												for="inputText-denunciadoCadTelResidencial"/>
+											<p:inputText id="inputText-denunciadoCadTelResidencial"
+												style="width:100px" maxlength="14"
+												value="#{cadDenunciadoController.denunciadoCadastro.telefoneResidencial}" 
+												onkeydown="javascript: fMasc( this, mTel );"/>
+
+											<p:outputLabel value="Tel. Celular:"
+												for="inputText-denunciadoCadTelCelular"/>
+											<p:inputText id="inputText-denunciadoCadTelCelular"
+												style="width:100px" maxlength="14"
+												value="#{cadDenunciadoController.denunciadoCadastro.telefoneCelular}" 
+												onkeydown="javascript: fMasc( this, mTel );"/>
+										</h:panelGrid>	
+																					
+									</p:tab>
+
+									<p:tab id="tb-cadDenunciadoperfilSaude" title="Saúde" >
+										<h:panelGrid id="panelGrid-perfilSaude" columns="2" cellpadding="5">
+											<p:outputLabel value="Deficiência:" for="inputText-denunciadoCaddeficiente" />
+											<p:inputText id="inputText-denunciadoCaddeficiente"
+												style="width:408px;" maxlength="140"
+												value="#{cadDenunciadoController.denunciadoCadastro.deficiente}" />
+			
+											<p:outputLabel value="Doênça Crônica:" for="inputText-denunciadoCadDoencaCronica" />
+											<p:inputText id="inputText-denunciadoCadDoencaCronica"
+												style="width:408px;" maxlength="140"
+												value="#{cadDenunciadoController.denunciadoCadastro.doencaCronica}" />
+			
+											<p:outputLabel value="Medicamento:" for="inputText-denunciadoCadMedicamento" />
+											<p:inputText id="inputText-denunciadoCadMedicamento"
+												style="width:408px;" maxlength="140"
+												value="#{cadDenunciadoController.denunciadoCadastro.medicamento}" />
+										</h:panelGrid>
+									</p:tab>
+										
+								</p:tabView>
+
+
+							<p:spacer />
+							<p:spacer />						
+							<h:panelGrid id="panelGrid-cadDenunciado-button" columns="6"
+								cellpadding="5">
+								<p:commandButton id="commandButton-denunciadoCadSave"
+									value="Salvar" icon="ui-icon-check"
+									actionListener="#{cadDenunciadoController.salvarDenunciado}"
+									update="tbview-cadDenunciado" />
+	
+								<p:commandButton value="Excluir" id="btnDeleteDenunciado" 
+								   style="height: 23px;"
+								   icon="ui-icon-close"
+								   onclick="if (! confirm('Realmente quer excluir este denunciado?')) return false" 
+								   update="tbview-cadDenunciado"  
+								   actionListener="#{cadDenunciadoController.deletarDenunciado}"
+								   rendered="#{cadDenunciadoController.denunciadoCadastro.id != 0}"/>
+								
+								<p:commandButton id="commandButton-denunciadoCadNovoDenunciado" 
+									value="Novo Denunciado" style="height:23px;" icon="ui-icon-person"
+									actionListener="#{cadDenunciadoController.novoDenunciado}"
+									update="form-cadDenunciado" />
+									
+								<p:commandButton id="btnImprimirDenunciado" value="Imprimir"
+									style="height: 20px !important;"   update="dialogImpDenunciado" 
+									title="Imprimir Dados do Denunciado" icon="ui-icon-print" oncomplete="PF('dialogImpDenunciado').show();"
+									process="@this" rendered="#{cadDenunciadoController.denunciadoCadastro.id != 0}"/>
+							</h:panelGrid>
+							
+						</p:panel>										
+					</h:form>
+					<p:spacer />
+					<p:spacer />
+			</p:tab>
+		</p:tabView>
+
+		
+		
+<!-- 		DIALOG PARA IMPRESSAO DOS DADOS DO DENUNCIADO -->
+		<p:dialog header="Imprimir - Dados do Denunciado" id="dialogImpDenunciado" widgetVar="dialogImpDenunciado" closable="true">
+			
+				<h:panelGrid id="panel-dadosDenunciadoImp" style="width:800px;border:solid 1px; border-radius:5px;" >
+					
+					<h:panelGrid id="panelGrid-cadDenunciadoHeader" columns="2" cellpadding="2" style="margin-left:30px;" >
+						<p:graphicImage url="/resources/imagens/logo_cram.jpg" height="62px;" />
+						<h:panelGrid id="panelGrid-cadDenunciadoHeadeaaar" columns="1" cellpadding="2" >
+							<p:outputLabel  value="Scram - Sistema do Centro de Referência de Atendimento à Mulher"
+								style="color: black;font-size: 16px;"/>
+							<p:outputLabel  value="Dados do Denunciado" style="color: black;font-size: 14px;"/>
+						</h:panelGrid>
+					</h:panelGrid>
+					<div style="border:solid 1px; border-radius:20px;"/>
+			
+					<h:panelGrid id="panelGrid-cadDenunciadoCod" columns="2" cellpadding="2" >
+						<p:outputLabel value="Código:" style="font-weight: bold;" for="outputText-denunciadoIdImp" />
+						<p:outputLabel id="outputText-denunciadoIdImp"
+							value="#{cadDenunciadoController.denunciadoCadastro.id}" />
+    				 </h:panelGrid>	
+					
+					<h:panelGrid id="panelGrid-cadDenunciadoNomeNasImp" columns="4" cellpadding="2" style="margin-top:-8px;">
+    					<p:outputLabel value="Nome:"  style="font-weight: bold;" for="outputText-denunciadoCadnomeImp" />
+						<p:outputLabel id="outputText-denunciadoCadnomeImp"
+							value="#{cadDenunciadoController.denunciadoCadastro.nome}"/>
+						<p:outputLabel value="Data Nasc.:"  style="font-weight: bold;margin-left: 60px;"  for="outputText-denunciadoCadNascimentoImp"/>
+						<p:outputLabel id="outputText-denunciadoCadNascimentoImp" value="#{cadDenunciadoController.denunciadoCadastro.nascimento}" converter="dateConverter" />
+					</h:panelGrid>
+						
+
+
+    				 <h:panelGrid id="panelGrid-cadDenunciadoCpfImp" columns="4" cellpadding="2" style="margin-top:-8px;">
+					 	<p:outputLabel value="CPF:"  style="font-weight: bold;"  for="outputText-denunciadoCadcpfImp" />
+				     	<p:outputLabel id="outputText-denunciadoCadcpfImp" 
+								style="width:110px;margin-left: 18px;"
+								value="#{cadDenunciadoController.denunciadoCadastro.cpf}"/>
+
+						 <p:outputLabel value="RG:"   for="outputText-denunciadoCadRGImp" 
+								style="width:110px;margin-left: 126px;font-weight: bold;"/>
+						 <p:outputLabel id="outputText-denunciadoCadRGImp" 
+								style="width:110px;" maxlength="14"
+								value="#{cadDenunciadoController.denunciadoCadastro.rg}"/>
+					</h:panelGrid>
+					
+    				<h:panelGrid id="panelGrid-enderecoImp" columns="2" cellpadding="2" style="margin-top:-8px;">
+						<p:outputLabel value="Endereço:"  style="font-weight: bold;"  for="outputText-denunciadoCadEnderecoImp" />
+						<p:outputLabel id="outputText-denunciadoCadEnderecoImp" 
+							style="width:400px;margin-left: 10px;" maxlength="140"
+							value="#{cadDenunciadoController.denunciadoCadastro.endereco}" />
+					</h:panelGrid>	
+					
+					<h:panelGrid id="panelGrid-bairroImp" columns="4" cellpadding="2" style="margin-top:-8px;">
+						<p:outputLabel value="Bairro:"  style="font-weight: bold;"  for="outputText-denunciadoCadBairroImp" />
+						<p:outputLabel id="outputText-denunciadoCadBairroImp" 
+							style="width:400px;margin-left: 18px;" maxlength="140"
+							value="#{cadDenunciadoController.denunciadoCadastro.bairro}" />
+					
+						<p:outputLabel value="Cidade:"  style="font-weight: bold;margin-left: 50px;"  for="outputText-denunciadoCadCidadeImp" />
+						<p:outputLabel id="outputText-denunciadoCadCidadeImp" 	style="margin-left: 10px;"
+							value="#{cadDenunciadoController.denunciadoCadastro.cidade.nome}"/>
+					</h:panelGrid>
+					
+					<h:panelGrid id="panelGrid-cadDenunciadoEtniaImp" columns="6" cellpadding="2" style="margin-top:-8px;">		
+						<p:outputLabel value="Etnia:"  style="font-weight: bold;" />								
+						<p:outputLabel id="denunciadoCadEtniaImp" style="margin-left:25px;"
+							value="#{cadDenunciadoController.denunciadoCadastro.etnia}"/>
+						
+						<p:outputLabel value="Religião:" style="margin-left: 50px;font-weight: bold;"/>								
+						<p:outputLabel id="denunciadoCadReligiaoImp"	
+							value="#{cadDenunciadoController.denunciadoCadastro.religiao}"/>
+						
+						<p:outputLabel value="Orientação Sexual:"  style="font-weight: bold;margin-left:50px;" />								
+						<p:outputLabel id="denunciadoCadSexoImp" 
+							value="#{cadDenunciadoController.denunciadoCadastro.sexo}"/>
+					</h:panelGrid>
+										
+					<p:panel id="pamel-contatoImp" header="Contato" >
+						<h:panelGrid id="panelGrid-telResidencialImp" columns="2" cellpadding="2">
+							<p:outputLabel value="Tel. Residencial:"  style="font-weight: bold;" 
+								for="outputText-denunciadoCadTelResidencialImp"/>
+							<p:outputLabel id="outputText-denunciadoCadTelResidencialImp"
+								style="width:100px" maxlength="14"
+								value="#{cadDenunciadoController.denunciadoCadastro.telefoneResidencial}"/>
+	
+							<p:outputLabel value="Tel. Celular:"  style="font-weight: bold;" 
+								for="outputText-denunciadoCadTelCelularImp"/>
+							<p:outputLabel id="outputText-denunciadoCadTelCelularImp"
+								value="#{cadDenunciadoController.denunciadoCadastro.telefoneCelular}"		/>
+						</h:panelGrid>																
+					</p:panel>
+			
+					<p:spacer />
+					<p:panel id="pamel-perfilProfissionalImp" header="Perfil Profissional" >
+						<h:panelGrid id="panelGrid-perfilProfissionalImp" columns="2" cellpadding="2">
+							<p:outputLabel value="Grau de Instrução:" for="denunciadoCadGrauInstrucaoImp"  style="font-weight: bold;" />
+							<p:outputLabel id="denunciadoCadGrauInstrucaoImp"										
+								value="#{cadDenunciadoController.denunciadoCadastro.grauInstrucao}"/>
+							
+							<p:outputLabel value="Profissão:" for="outputText-denunciadoCadProfissiaoImp"  style="font-weight: bold;" />
+					        <p:outputLabel id="outputText-denunciadoCadProfissiaoImp" maxlength="200"
+					        	style="width:408px;" value="#{cadDenunciadoController.denunciadoCadastro.profissao}"/>
+						</h:panelGrid>
+					</p:panel>
+							
+					<p:spacer />	
+					<p:panel id="pamel-perfilProfissionaSocialImp" header="Perfil Social" >
+						<h:panelGrid id="panelGrid-perfilSocialImp" columns="2" cellpadding="2">
+							<p:outputLabel value="Programa Social:"  style="font-weight: bold;"  for="outputText-denunciadoCadProgSocialImp" />
+							<p:outputLabel id="outputText-denunciadoCadProgSocialImp"
+								style="width:390px;margin-left:23px;" maxlength="140"
+								value="#{cadDenunciadoController.denunciadoCadastro.programaSocial}" />
+						</h:panelGrid>
+					</p:panel>
+		
+					<p:spacer />
+					<p:panel id="pamel-saudeImp" header="Saúde" >
+						<h:panelGrid id="panelGrid-perfilSaudeImp" columns="2" cellpadding="2">
+							<p:outputLabel value="Deficiência:"  style="font-weight: bold;"  for="outputText-denunciadoCaddeficienteImp" />
+							<p:outputLabel id="outputText-denunciadoCaddeficienteImp"
+								style="width:408px;" maxlength="140"
+								value="#{cadDenunciadoController.denunciadoCadastro.deficiente}" />
+	
+							<p:outputLabel value="Doênça Crônica:"  style="font-weight: bold;"  for="outputText-denunciadoCadDoencaCronicaImp" />
+							<p:outputLabel id="outputText-denunciadoCadDoencaCronicaImp"
+								style="width:408px;" maxlength="140"
+								value="#{cadDenunciadoController.denunciadoCadastro.doencaCronica}" />
+	
+							<p:outputLabel value="Medicamento:"  style="font-weight: bold;"  for="outputText-denunciadoCadMedicamentoImp" />
+							<p:outputLabel id="outputText-denunciadoCadMedicamentoImp"
+								style="width:408px;" maxlength="140"
+								value="#{cadDenunciadoController.denunciadoCadastro.medicamento}" />
+						</h:panelGrid>
+					</p:panel>
+			</h:panelGrid>
+			<center>
+				<h:panelGrid id="pamel-buttomImp" columns="2" 	cellpadding="3">
+					<p:commandButton value="Imprimir" type="button"   icon="ui-icon-print">
+					    <p:printer target="panel-dadosDenunciadoImp" />
+					</p:commandButton>	
+					<p:commandButton value="Fechar" type="button"   icon="ui-icon-close" onclick="PF('dialogImpDenunciado').hide();" />					
+				</h:panelGrid>
+			</center>	
+		</p:dialog>
+		
+		
+	 </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:form>
+
+	<p:menubar>
+		<p:menuitem value="Home" icon="ui-icon-home" url="home.xhtml"/>
+		<p:submenu label="Administração" icon="ui-icon-gear" rendered="#{usuarioController.usuarioLogado.perfil eq 'ROLE_ADMIN' or usuarioController.usuarioLogado.perfil eq 'ROLE_COORDENADOR'}" >
+			<p:menuitem value="Usuários" icon="ui-icon-document" url="usuarioCad.xhtml" title="Cadastro de Usuários"/>
+			<p:menuitem value="Acessos" icon="ui-icon-document" url="acessoView.xhtml" title="Acesso de Usuários"/>
+		</p:submenu>
+		<p:submenu label="Cadastro" icon="ui-icon-document" rendered="#{usuarioController.usuarioLogado.perfil eq 'ROLE_ADMINISTRATIVO' or usuarioController.usuarioLogado.perfil eq 'ROLE_COORDENADOR'}">
+			<p:menuitem value="Usuária" icon="ui-icon-document" url="usuariaCad.xhtml"  title="Cadastro de Usuária" />
+			<p:menuitem value="Denunciado" icon="ui-icon-document" url="denunciadoCad.xhtml"  title="Cadastro de Denunciado"/>
+			<p:menuitem value="Ficha de Atendimento" icon="ui-icon-document" url="fichaAtendimentoCad.xhtml"  title="Cadastro de Ficha de Atendimento"/>
+			<p:menuitem value="Evolução" icon="ui-icon-document" url="evolucaoCad.xhtml"  title="Cadastro de Evolução"/>
+		</p:submenu>
+		<p:submenu label="Visualizar" icon="ui-icon-circle-zoomin" >
+			<p:menuitem value="Usuárias" icon="ui-icon-circle-zoomin" url="usuariaView.xhtml"  title="Visualizar Usuárias"/>
+			<p:menuitem value="Denunciados" icon="ui-icon-circle-zoomin" url="denunciadoView.xhtml"  title="Visualizar Denunciados"/>
+			<p:menuitem value="Ficha de Atendimento" icon="ui-icon-circle-zoomin" url="fichaAtendimentoView.xhtml" title="Visualizar Ficha de Atendimento"/>
+			<p:menuitem value="Evolução" icon="ui-icon-circle-zoomin" url="evolucaoView.xhtml" title="Visualizar Evolução"/>		
+		</p:submenu>		
+		<p:submenu label="Relatórios" icon="ui-icon-clipboard" >
+			<p:menuitem value="Usuárias" icon="ui-icon-clipboard" url="relatorioUsuarias.xhtml" title="Relatório de Usuárias"/>
+			<p:menuitem value="Denunciados" icon="ui-icon-clipboard" url="relatorioDenunciados.xhtml" title="Relatório de Denunciados"/>
+			<p:menuitem value="Ficha de Atendimento" icon="ui-icon-clipboard" url="relatorioFichaAtendimento.xhtml" title="Relatório de Ficha de Atendimento"/>
+			<p:menuitem value="Evolução" icon="ui-icon-clipboard" url="relatorioEvolucao.xhtml" title="Relatório de Evolução"/>
+			<p:menuitem value="Atendimentos" icon="ui-icon-clipboard" url="relatorioAtendimentos.xhtml" title="Relatório de Atendimentos"/>
+
+		</p:submenu>
+
+		<p:menuitem value="- #{usuarioController.usuarioLogado.nome}" icon="ui-icon-person" disabled="false" onclick="PF('dialogUsuario').show();"
+				    style="position: absolute; right: 100px; font-size:13px !important;" title="Usuário - #{usuarioController.usuarioLogado.nome}"/>
+				    
+		<f:facet name="options">
+			<p:commandButton value="Logout" icon="ui-icon-extlink" title="Sair do Sistema"
+					action="#{usuarioController.Logout}"/>
+		</f:facet>
+	</p:menubar>
+
+	<p:dialog
+		header="SCRAM - Sistema do Centro de Referência de Atendimento à Mulher"
+		widgetVar="dialogUsuario" minHeight="40" closable="true" style="background-color: #f3f3f3;">
+		<h:panelGrid id="panelGridUsuario" columns="1" cellpadding="5"
+			width="100%">
+			<p:panel id="panelDadosUsuário" header="Dados do usuário">
+				<h:panelGrid columns="2" cellpadding="5">
+					<h:outputLabel value="Nome:" style="font-weight:bold;" />
+					<h:outputLabel value="#{usuarioController.usuarioLogado.nome}" />
+
+					<h:outputLabel value="CPF:" style="font-weight:bold;" />
+					<h:outputLabel value="#{usuarioController.usuarioLogado.cpf}" />
+
+					<h:outputLabel value="Perfil:" style="font-weight:bold;" />
+					<h:outputText value="#{usuarioController.usuarioLogado.perfilDetail}" />					
+					
+				</h:panelGrid>
+			</p:panel>
+		</h:panelGrid>
+	</p:dialog>
+
+	<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />    
+		<p:dialog  widgetVar="statusDialog" draggable="false"  closable="false" resizable="false" header="Carregando...">  
+		    <center>
+		 	   <h:graphicImage value="/resources/imagens/ajax-loader.gif"/>
+		    </center>
+	</p:dialog>  
+
+</h:form>
+
+</html>

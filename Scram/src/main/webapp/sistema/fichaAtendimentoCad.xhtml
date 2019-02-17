@@ -1,0 +1,636 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template/layoutBase.xhtml">
+	<ui:define name="content">
+
+
+		<p:tabView id="tbview-cadFichaAtendimento" activeIndex="#{cadFichaAtendimentoController.tabIndexCadFichaAtendimento}"
+			style="width:auto;height:auto;margin:auto;"  effect="blind">
+			<p:tab id="tb-consultaFichaAtendimento" title="Consultar Fichas de Atendmento" >
+				<h:form style="margin:autotext-align:center;" id="form-consulta">
+					<h:panelGrid id="panelGrid-campos-form" columns="9" cellpadding="5">
+
+						<p:outputLabel value="Nome da Usuária:" for="fichaAtendimentoFindNomeUsuaria" />
+						<p:inputText id="fichaAtendimentoFindNomeUsuaria"
+							style="width:215px;height:11px;" maxlength="70"
+							value="#{cadFichaAtendimentoController.fichaAtendimentoFind.usuaria.nome}"/>
+					
+						<p:outputLabel value="CPF da Usuária:" for="fichaAtendimentoFindCpfUsuaria" 
+							style="margin-left:25px;"/>
+						<p:inputText id="fichaAtendimentoFindCpfUsuaria"
+							style="width:90px;height:11px;" maxlength="14"
+							value="#{cadFichaAtendimentoController.fichaAtendimentoFind.usuaria.cpf}" 
+							onkeydown="javascript: fMasc( this, mCPF );"/>
+
+						<p:commandButton value="Pesquisar" style="height:23px;"
+							id="commandButton-fichaAtendimentoCadFind" icon="ui-icon-search"
+							actionListener="#{cadFichaAtendimentoController.findFichaAtendimento}"
+							update="dataTable-fichaAtendimentoList"  />
+					</h:panelGrid>
+					
+					<p:dataTable id="dataTable-fichaAtendimentoList" var="fichaAtendimento"
+						value="#{cadFichaAtendimentoController.fichaAtendimentoList}" rows="15"
+						paginator="true"
+                 		paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+						style="width:100%;" emptyMessage="Nenhum Registro Encontrado"
+						resizableColumns="true" >
+
+						<f:facet name="header">
+     				       Fichas de Atendimento
+      				    </f:facet>
+      				    
+						<p:column headerText="Código" sortBy="#{fichaAtendimento.id}" style="text-align:center;" width="5%">
+							<h:outputText value="#{fichaAtendimento.id}" />
+						</p:column>
+
+						<p:column headerText="Data" sortBy="#{fichaAtendimento.dataFichaAtendimento}" style="text-align:center;"  width="5%">
+							<h:outputText value="#{fichaAtendimento.dataFichaAtendimento}" >
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+					
+						<p:column headerText="Usuária" sortBy="#{fichaAtendimento.usuaria.nome}" style="text-align:center;" >
+							<h:outputText value="#{fichaAtendimento.usuaria.toDetail}" />							
+						</p:column>
+												
+						<p:column headerText="Denunciado" sortBy="#{fichaAtendimento.denunciado.nome}" style="text-align:center;" >
+							<h:outputText value="#{fichaAtendimento.denunciado.toDetail}" />							
+						</p:column>
+
+						<p:column headerText="Grau de Parentesco" sortBy="#{fichaAtendimento.grauParentescoDenunciado}" style="text-align:center;" >
+							<h:outputText value="#{fichaAtendimento.grauParentescoDenunciado}" />							
+						</p:column>
+						
+						<p:column headerText="Tipo Violência" sortBy="#{fichaAtendimento.tipoViolenciaDetail}" width="20%" style="text-align:center;">
+							<h:outputText value="#{fichaAtendimento.tipoViolenciaDetail}" />
+						</p:column>
+
+						<p:column style="text-align: center;" width="5%;" headerText="Ações" exportable="false">
+							<p:commandButton id="btnDetalharFichaAtendimento"
+								style="height: 20px;width: 25px;margin:-2px;" update=":tbview-cadFichaAtendimento"
+								title="Editar" icon="ui-icon-search"
+								action="#{cadFichaAtendimentoController.detalharFichaAtendimento}" process="@this">
+								<f:setPropertyActionListener value="#{fichaAtendimento.id}" target="#{cadFichaAtendimentoController.fichaAtendimentoIdSelecionado}" />
+							</p:commandButton>
+						</p:column>
+					    <f:facet name="footer">
+      				       	 <div style="float:left;padding-top: 7px;">
+				               <h:commandLink>
+									<p:graphicImage url="/resources/imagens/xls_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para Excel" />
+				                    <p:dataExporter type="xls" target="dataTable-fichaAtendimentoList" encoding="ISO-8859-1" options="#{exportaDocumentoCustom.excelOpt}"  fileName="fichasAtendimento" />
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+				                    <p:graphicImage url="/resources/imagens/pdf_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para PDF" />
+				                    <p:dataExporter type="pdf" target="dataTable-fichaAtendimentoList" fileName="fichasAtendimento" encoding="ISO-8859-1" preProcessor="#{exportaDocumentoCustom.preProcessPDF}"  options="#{exportaDocumentoCustom.pdfOpt}"/>
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+									<p:graphicImage url="/resources/imagens/csv_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para CSV" />
+				                    <p:dataExporter type="csv" target="dataTable-fichaAtendimentoList" encoding="ISO-8859-1" fileName="fichasAtendimento"/>
+				                </h:commandLink>		 
+			            	</div>
+			      		 </f:facet>
+					</p:dataTable>
+				</h:form>
+			</p:tab>
+			<p:tab id="tab-cadFichaAtendimento" title="Cadastrar Ficha de Atendimento" style="width:auto;height:auto;">
+			    	<h:form style="margin:autotext-align:center;" id="form-cadFichaAtendimento">
+						<p:messages id="messagesCadFichaAtendimento" style="width:618px;" showDetail="true" autoUpdate="true" closable="true" />
+							<p:panel id="panel-dadosFichaAtendimento"  style="width:610px; margin-top: -8px;" header="Dados da Ficha de Atendimento" >
+       							 
+       							 <h:panelGrid id="panelGrid-cadFichaAtendimentoCod" columns="2" cellpadding="3">
+									<p:outputLabel value="Código:" for="inputText-fichaAtendimentoId" />
+									<p:inputText id="inputText-fichaAtendimentoId" disabled="true"
+										style="width:50px;margin-left:40px;text-align:center;"
+										value="#{cadFichaAtendimentoController.fichaAtendimentoCad.id}" />
+       							 </h:panelGrid>	
+
+ 								<h:panelGrid id="panelGrid-cadFichaAtendimentoProcesso" columns="4" cellpadding="3">
+								 	<p:outputLabel value="Processo:" for="inputText-fichaAtendimentoCadProcesso" />
+							     	<p:inputText id="inputText-fichaAtendimentoCadProcesso"
+											style="width:110px;margin-left: 28px;" maxlength="50"
+											value="#{cadFichaAtendimentoController.fichaAtendimentoCad.processo}"/>
+		
+									 <p:outputLabel value="Data*:" for="inputText-fichaAtendimentoCadData" 
+											style="width:110px;margin-left: 130px;"/>
+									  <p:calendar id="inputText-fichaAtendimentoCadData"
+							        	value="#{cadFichaAtendimentoController.fichaAtendimentoCad.dataFichaAtendimento}"
+							        	size="12" showOn="button" pattern="dd/MM/yyyy" mask="true" locale="pt" />								
+								</h:panelGrid>
+
+
+								<h:panelGrid id="panelGrid-cadFichaAtendimentoTipoViolencia" columns="3" cellpadding="3">
+										<p:outputLabel value="Tipo Violência*:" />	
+										<h:selectManyCheckbox id="input-fichaAtendimentoCadTipoViolencia" layout="lineDirection"										
+										    value="#{cadFichaAtendimentoController.fichaAtendimentoCad.tiposViolencia}">
+								            <f:selectItems value="#{tipoViolenciaListener.tiposViolencia}" />
+								        </h:selectManyCheckbox>
+								        
+								        <p:commandButton id="btnTipoViolenciaHelp" 
+											style="height: 20px !important;margin-left: 17px;" 
+											title="Tipos de Violência" icon="ui-icon-help" 
+											onclick="PF('dialogTipoViolencia').show();"	/>
+								        
+								</h:panelGrid>
+								
+								<h:panelGrid id="panelGrid-cadFichaAtendimentoUsuaria" columns="3" cellpadding="3">
+									<p:outputLabel value="Usuária*:" for="inputText-fichaAtendimentoUsuaria" />
+									<p:autoComplete id="inputText-fichaAtendimentoUsuaria"
+										style="margin-left: 31px;"
+										value="#{cadFichaAtendimentoController.fichaAtendimentoCad.usuaria}"
+										completeMethod="#{cadFichaAtendimentoController.findUsuariaAutoComplete}"
+										var="usuaria" queryDelay="250" minQueryLength="3"
+										itemLabel="#{usuaria.toDetail}" itemValue="#{usuaria}"
+										converter="usuariaConverter" size="78">									
+									</p:autoComplete>
+									<p:commandButton id="btnFindUsuaria"
+										style="margin-left: -38px;" disabled="true" icon="ui-icon-search">									
+									</p:commandButton>
+								</h:panelGrid>		
+								
+								<h:panelGrid id="panelGrid-cadFichaAtendimentoDenunciado" columns="3" cellpadding="3">
+									<p:outputLabel value="Denunciado*:" for="inputText-fichaAtendimentoDenunciado" />
+									<p:autoComplete id="inputText-fichaAtendimentoDenunciado"
+										style="margin-left: 8px;"
+										value="#{cadFichaAtendimentoController.fichaAtendimentoCad.denunciado}"
+										completeMethod="#{cadFichaAtendimentoController.findDenunciadoAutoComplete}"
+										var="denunciado" queryDelay="250" minQueryLength="3"
+										itemLabel="#{denunciado.toDetail}" itemValue="#{denunciado}"
+										converter="denunciadoConverter" size="78">										
+									</p:autoComplete>
+									<p:commandButton id="btnFindDenunciado"
+										style="margin-left: -38px;" disabled="true" icon="ui-icon-search">									
+									</p:commandButton>
+								</h:panelGrid>		
+
+								<h:panelGrid id="panelGrid-cadFichaAtendimentoGrauDenunciado" columns="2" cellpadding="3">
+									<p:outputLabel value="Grau de Parentesco:" for="inputText-fichaAtendimentoGrauDenunciado" />
+							     	<p:inputText id="inputText-fichaAtendimentoGrauDenunciado"
+											style="width:380px;" maxlength="150"
+											value="#{cadFichaAtendimentoController.fichaAtendimentoCad.grauParentescoDenunciado}"/>
+								</h:panelGrid>		
+								
+							
+								<p:tabView id="tbview-cadFichaAtendimentoDadosOpcionais" activeIndex="#{cadFichaAtendimentoController.tabIndexCadFichaAtendimentoDados}"
+								  style="width:auto;height:180px;margin:auto;margin-top: 5px;">
+							
+
+								<p:tab id="panel-cadFichaAtendimentoReferenciada" title="Referenciada" >
+									 <h:panelGrid id="panelGrid-cadFichaAtendimentoReferenciada" columns="2" cellpadding="3">
+											<p:outputLabel value="Serviço*:" for="input-fichaAtendimentoCadRefServico" />								
+											<p:selectOneMenu id="input-fichaAtendimentoCadRefServico" 
+												value="#{cadFichaAtendimentoController.fichaAtendimentoCad.referenciadaServico}">
+												<f:selectItem itemLabel="Selecione..." itemValue=""/>  
+												<f:selectItems value="#{referenciadaServicoListener.referenciadaServicos}" />
+											</p:selectOneMenu>
+											
+											<p:outputLabel value="Observação:" for="input-fichaAtendimentoCadRefServicoObs" />
+											<p:inputTextarea  id="input-fichaAtendimentoCadRefServicoObs" rows="4" cols="80" 
+													counter="displayCounterReferenciadaServicoObs" autoResize="false" style="height: 67px;" 
+													maxlength="200" counterTemplate="{0} caracteres restantes"  
+													value="#{cadFichaAtendimentoController.fichaAtendimentoCad.referenciadaServicoObs}"/>
+									</h:panelGrid>
+									<h:panelGrid id="panelGrid-displayCounterReferenciadaServicoObs" style="margin-left: 80px;margin-top:-6px;">
+											<h:outputText id="displayCounterReferenciadaServicoObs" />	
+									</h:panelGrid>
+								</p:tab>
+
+								<p:tab id="panel-cadFichaAtendimentoDocEncaminhamento" title="Documento Encaminhamento" 
+								 		 style="margin-top:10px;">
+									 <h:panelGrid id="panelGrid-cadFichaAtendimentoDocEncaminhamento" columns="2" cellpadding="3">
+											<p:outputLabel value="Documento:" for="input-fichaAtendimentoCadDocEncaminhamento" />	
+											<p:selectOneMenu id="input-fichaAtendimentoCadDocEncaminhamento"
+												value="#{cadFichaAtendimentoController.fichaAtendimentoCad.documentoEncaminhamento}">
+												<f:selectItem itemLabel="Selecione..." itemValue=""/>  
+												<f:selectItems value="#{documentoEncaminhamentoListener.documentosEncaminhamento}"/>							
+											</p:selectOneMenu>
+											
+											<p:outputLabel value="Observação:" for="input-fichaAtendimentoCadDocEncaminhamentoObs" />
+											<p:inputTextarea  id="input-fichaAtendimentoCadDocEncaminhamentoObs" rows="4" cols="80" 
+													counter="displayCounterDocEncaminhamentoObs" autoResize="false" style="height: 67px;"
+													maxlength="200" counterTemplate="{0} caracteres restantes" 
+													value="#{cadFichaAtendimentoController.fichaAtendimentoCad.documentoEncaminhamentoObs}"/>
+									</h:panelGrid>
+									<h:panelGrid id="panelGrid-displayCounterDocEncaminhamentoObs" style="margin-left: 80px;margin-top:-6px;">
+											<h:outputText id="displayCounterDocEncaminhamentoObs" />	
+									</h:panelGrid>
+								</p:tab>
+								
+								<p:tab id="panel-cadFichaAtendimentoMotivo" title="Motivo da Procura" 
+								 		 style="margin-top:10px;">
+									<h:panelGrid id="panelGrid-cadFichaAtendimentoMotivo" columns="2" cellpadding="3">
+											<p:outputLabel value="Motivo*:" for="input-fichaAtendimentoCadMotivo" />	
+											<p:inputTextarea  id="input-fichaAtendimentoCadMotivo" rows="4" cols="80" 
+													counter="displayCounterCadMotivo" autoResize="false" style="height:67px;margin-left: 29px;"
+													maxlength="200" counterTemplate="{0} caracteres restantes"  
+													value="#{cadFichaAtendimentoController.fichaAtendimentoCad.motivoEncaminhamento}"/>
+									</h:panelGrid>
+									<h:panelGrid id="panelGrid-displayCounterCadMotivo" style="margin-left: 80px;margin-top:-6px;">
+											<h:outputText id="displayCounterCadMotivo" />	
+									</h:panelGrid>
+								</p:tab>
+
+								<p:tab id="panel-cadFichaAtendimentoProvidencia" title="Providência" 
+								 		 style="margin-top:10px;">
+									<h:panelGrid id="panelGrid-cadFichaAtendimentoProvidencia" columns="2" cellpadding="3">
+											<p:outputLabel value="Providência*:" for="input-fichaAtendimentoCadProvidencia" />	
+											<p:inputTextarea  id="input-fichaAtendimentoCadProvidencia" rows="4" cols="80" 
+													counter="displayCounterProvidencia"  autoResize="false" style="height:67px;margin-left: 3px;"
+													maxlength="200" counterTemplate="{0} caracteres restantes"  
+													value="#{cadFichaAtendimentoController.fichaAtendimentoCad.providencia}"/>
+									</h:panelGrid>
+									<h:panelGrid id="panelGrid-displayCounterProvidencia" style="margin-left: 85px;margin-top:-6px;">
+											<h:outputText id="displayCounterProvidencia" />	
+									</h:panelGrid>
+								</p:tab>
+							</p:tabView>
+						</p:panel>		
+                        
+                        <!-- ********************	EVOLUCAO ******************** -->
+						
+						<p:panel id="panel-Evolucao"  style="width:610px;height: 260px;margin-top: 5px;"  header="Evolução" 
+								rendered="#{cadFichaAtendimentoController.fichaAtendimentoCad.id != 0}" >
+							<h:panelGrid id="panelGrid-EvolucaoBtn" columns="2" cellpadding="1">
+								<p:commandButton id="btnCadEvolucao" value="Adicionar Evolução"
+									action="#{cadFichaAtendimentoController.novaEvolucaoFichaAtendimento}"
+									update="dialogCadEvolucao" process="@this"
+									title="Adicionar Evolução" oncomplete="PF('dialogCadEvolucao').show();"/>
+								
+								<p:commandButton id="btnImprimirEvolucao" value="Imprimir Evolução"
+									update="dialogImpEvolucao" process="@this"
+									title="Imprimir Evolução" icon="ui-icon-print" oncomplete="PF('dialogImpEvolucao').show();"/>
+							</h:panelGrid>	
+							
+							<h:panelGrid id="panelGrid-EvolucaoTable" columns="1" cellpadding="1">
+								<p:dataTable id="dataTable-evolucaofichaAtendimento" var="evolucao"
+									value="#{cadFichaAtendimentoController.evolucaoFichaAtendimentoList}" 
+									rows="3"  paginator="true"
+                 					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+									style="width:100%;" emptyMessage="Nenhum Registro Encontrado"
+									resizableColumns="true" >
+							
+									<p:column headerText="Data" sortBy="#{evolucao.data}" style="text-align:center;"  width="10%">
+										<h:outputText value="#{evolucao.data}" >
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</p:column>
+								
+									<p:column headerText="Responsável" sortBy="#{evolucao.usuario.nome}" style="text-align:center;" >
+										<h:outputText value="#{evolucao.usuario.nome}" />							
+									</p:column>
+															
+									<p:column headerText="Assunto" sortBy="#{evolucao.assunto}" style="text-align:center;" >
+										<h:outputText value="#{evolucao.assunto}" />							
+									</p:column>
+									<p:column style="text-align: center;" width="5%;" headerText="Ações" exportable="false">
+										<p:commandButton id="btnDetalharEvolucaoFichaAtendimento"
+											style="height: 20px;width: 25px;margin:-2px;" update=":form-cadEvolucao"
+											title="Editar" icon="ui-icon-search"
+											action="#{cadFichaAtendimentoController.detalharEvolucaoFichaAtendimento}" 
+											oncomplete="PF('dialogCadEvolucao').show();" process="@this">											
+											<f:setPropertyActionListener value="#{evolucao.id}" target="#{cadFichaAtendimentoController.evolucaoFichaAtendimentoIdSelecionado}" />
+										</p:commandButton>
+									</p:column>
+								
+								    <f:facet name="footer">
+			      				       	 <div style="float:left;padding-top: 6px;">
+							               <h:commandLink>
+												<p:graphicImage url="/resources/imagens/xls_icon.jpg" style="height: 20px;width: 17px;" title="Exportar para Excel" />
+							                    <p:dataExporter type="xls" target="dataTable-evolucaofichaAtendimento" encoding="ISO-8859-1" options="#{exportaDocumentoCustom.excelOpt}"  fileName="evolucaoFichasAtendimento" />
+							                </h:commandLink>
+							 
+							                <h:commandLink>
+							                    <p:graphicImage url="/resources/imagens/pdf_icon.jpg" style="height: 20px;width: 17px;" title="Exportar para PDF" />
+							                    <p:dataExporter type="pdf" target="dataTable-evolucaofichaAtendimento" fileName="evolucaoFichasAtendimento" encoding="ISO-8859-1" preProcessor="#{exportaDocumentoCustom.preProcessPDF}"  options="#{exportaDocumentoCustom.pdfOpt}"/>
+							                </h:commandLink>
+							 
+							                <h:commandLink>
+												<p:graphicImage url="/resources/imagens/csv_icon.jpg" style="height: 20px;width: 17px;" title="Exportar para CSV" />
+							                    <p:dataExporter type="csv" target="dataTable-evolucaofichaAtendimento" encoding="ISO-8859-1" fileName="evolucaoFichasAtendimento"/>
+							                </h:commandLink>		 
+						            	</div>
+						      		 </f:facet>									 
+								</p:dataTable>
+							</h:panelGrid>
+						</p:panel>
+						<!-- ********************END EVOLUCAO******************** -->
+									
+						<h:panelGrid id="panelGrid-cadFichaAtendimento-button" columns="6" cellpadding="5" style="margin-top: -2px;">
+							<p:commandButton id="commandButton-FichaAtendimentoCadSave"
+								value="Salvar" icon="ui-icon-check"
+								actionListener="#{cadFichaAtendimentoController.salvarFichaAtendimento}"
+								update="tbview-cadFichaAtendimento" />
+
+							<p:commandButton value="Excluir" id="btnDeleteFichaAtendimento" 
+							   style="height: 23px;"
+							   icon="ui-icon-close" 
+							   onclick="if (! confirm('Realmente quer excluir esta Ficha de Atendimento?')) return false" 
+							   update="tbview-cadFichaAtendimento" 
+							   actionListener="#{cadFichaAtendimentoController.deletarFichaAtendimento}"
+							   rendered="#{cadFichaAtendimentoController.fichaAtendimentoCad.id != 0}"/>
+
+							
+							<p:commandButton id="btnNovaFichaAtendimento" 
+								value="Nova Ficha de Atendimento" style="height:23px;" icon="ui-icon-person"
+								actionListener="#{cadFichaAtendimentoController.novaFichaAtendimento}"
+								update="form-cadFichaAtendimento" />
+								
+							<p:commandButton id="btnImprimirFichaAtendimento" value="Imprimir"
+								style="height: 20px !important;"   update="dialogImpFichaAtendimento" process="@this"
+								title="Imprimir Dados da Ficha de Atendimento" icon="ui-icon-print" oncomplete="PF('dialogImpFichaAtendimento').show();"
+								rendered="#{cadFichaAtendimentoController.fichaAtendimentoCad.id != 0}"/>
+
+						</h:panelGrid>
+					</h:form>
+			</p:tab>
+		</p:tabView>
+		
+<!-- ******************** DIALOG PARA CADASTRO/EDICAO DA EVOLUÇÃO DA FICHA DE ATENDIMENTO  ********************-->
+		<p:dialog header="Evolução - Ficha de Atendimento" id="dialogCadEvolucao" widgetVar="dialogCadEvolucao" closable="true"
+		 visible="#{not empty facesContext.maximumSeverity}">
+			<h:form style="margin:autotext-align:center;" id="form-cadEvolucao">
+				 <h:panelGrid id="panelGrid-cadEvoluca" columns="4" cellpadding="3">
+						<p:outputLabel value="Assunto*:" for="inputText-evolucaoAssunto" />
+						<p:inputText id="inputText-evolucaoAssunto"  style="width:215px;margin-left: 11px;" maxlength="150"
+							value="#{cadFichaAtendimentoController.evolucaoCad.assunto}" />
+							
+						<p:outputLabel value="Data*:" for="inputText-evolucaoData" 
+								style="width:110px;margin-left: 30px;"/>
+						 <p:calendar id="inputText-evolucaoData"
+				        	value="#{cadFichaAtendimentoController.evolucaoCad.data}"
+				        	size="12" showOn="button" navigator="true" pattern="dd/MM/yyyy" mask="true" locale="pt" />
+	   			</h:panelGrid>	
+				 <h:panelGrid id="panelGrid-cadEvolucaDescricao" columns="4" cellpadding="3">
+					<p:outputLabel value="Descricao*:" for="inputText-evolucaoDescricao" 
+							style="width:110px;"/>
+				 	<p:inputTextarea  id="inputText-evolucaoDescricao" rows="20" cols="90" 
+									counter="displayCounterDescEvoluca" 
+									style="height:260px;" autoResize="false" 
+									maxlength="1000" counterTemplate="{0} caracteres restantes" 
+									value="#{cadFichaAtendimentoController.evolucaoCad.descricao}"/>
+				</h:panelGrid>
+				<h:panelGrid id="panelGrid-displayCounterDescEvoluca" style="margin-left: 80px;margin-top:-6px;">
+							<h:outputText id="displayCounterDescEvoluca" />	
+				</h:panelGrid>	
+				<center>
+					<h:panelGrid id="pamel-buttomCadEvolucao" columns="4" 	cellpadding="3">
+					
+						<p:remoteCommand name="updatePanelEvolucao" update="tbview-cadFichaAtendimento" />
+						<p:commandButton id="commandButton-EvolucaoCadSave"
+							value="Salvar" icon="ui-icon-check"
+							actionListener="#{cadFichaAtendimentoController.salvarEvolucao}"
+							update="dialogCadEvolucao" oncomplete="updatePanelEvolucao()"/>							
+							
+						<p:commandButton value="Excluir" id="btnDeleteEvolucaoFichaAtendimento" 
+							   style="height: 23px;"
+							   icon="ui-icon-close" 
+							   onclick="if (! confirm('Realmente quer excluir esta Evolução?')) return false" 
+							   update="dialogCadEvolucao" 
+							   actionListener="#{cadFichaAtendimentoController.deletarEvolucaoFichaAtendimento}"
+							   rendered="#{cadFichaAtendimentoController.evolucaoCad.id != 0}"/>
+							
+						<p:commandButton id="btnFechardialogCadEvolucao"
+							value="Fechar" icon="ui-icon-close"
+							actionListener="#{cadFichaAtendimentoController.findAllEvolucaoFichaAtendimento}"
+							update="tbview-cadFichaAtendimento"  oncomplete="PF('dialogCadEvolucao').hide();"/>
+						
+					</h:panelGrid>
+				</center>		
+			</h:form>
+		</p:dialog>
+		
+<!-- ********************DIALOG PARA IMPRESSAO DOS DADOS DA FICHA DE ATENDIMENTO********************  -->
+		<p:dialog header="Imprimir - Dados da Ficha de Atendimento" id="dialogImpFichaAtendimento" widgetVar="dialogImpFichaAtendimento" closable="true">
+			
+			<h:panelGrid id="panel-dadosFichaAtendimentoImp" style="width:800px;border:solid 1px; border-radius:5px;" >
+					
+				<h:panelGrid id="panelGrid-FichaAtendimentoHeader" columns="2" cellpadding="2" style="margin-left:30px;" >
+					<p:graphicImage url="/resources/imagens/logo_cram.jpg" height="62px;" />
+					<h:panelGrid id="panelGrid-FichaAtendimentoScramHeader" columns="1" cellpadding="2" >
+						<p:outputLabel  value="Scram - Sistema do Centro de Referência de Atendimento à Mulher"
+							style="color: black;font-size: 16px;"/>
+						<p:outputLabel  value="Dados da Ficha de Atendmento" style="color: black;font-size: 14px;"/>
+					</h:panelGrid>
+				</h:panelGrid>
+				<div style="border:solid 1px; border-radius:20px;"/>
+			
+				<h:panelGrid id="panelGrid-cadFichaAtendimentoCodImp" columns="6" cellpadding="2" >
+					<p:outputLabel value="Código:" style="font-weight: bold;" for="outputTextFichaAtendimentoId" />
+					<p:outputLabel id="outputTextFichaAtendimentoId" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.id}" />				
+				
+					<p:outputLabel value="Processo:" style="font-weight: bold;margin-left: 40px;" for="outputTextFichaAtendimentoProcesso" />
+					<p:outputLabel id="outputTextFichaAtendimentoProcesso" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.processo}" />
+									
+					<p:outputLabel value="Data:" style="font-weight: bold;margin-left: 40px;" for="outputTextFichaAtendimentoData" />
+					<p:outputLabel id="outputTextFichaAtendimentoData" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.dataFichaAtendimento}"  converter="dateConverter" />				
+				</h:panelGrid>
+				
+				<h:panelGrid id="panelGrid-cadFichaAtendimentoTipoViolenciaImp" columns="2" cellpadding="2" >
+					<p:outputLabel value="Tipo Violência:" style="font-weight: bold;" for="outputTextFichaAtendimentoTipoViolencia" />
+					<p:outputLabel id="outputTextFichaAtendimentoTipoViolencia" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.tipoViolenciaDetail}" />
+				</h:panelGrid>
+
+				<h:panelGrid id="panelGrid-cadFichaAtendimentoUsuariaImp" columns="2" cellpadding="2" >
+					<p:outputLabel value="Usuária:" style="font-weight: bold;" for="outputTextFichaAtendimentoUsuaria" />
+					<p:outputLabel id="outputTextFichaAtendimentoUsuaria" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.usuaria.toDetail}" />
+				</h:panelGrid>
+
+				<h:panelGrid id="panelGrid-cadFichaAtendimentoDenunciadoImp" columns="2" cellpadding="2" >
+					<p:outputLabel value="Denunciado:" style="font-weight: bold;" for="outputTextFichaAtendimentoDenunciado" />
+					<p:outputLabel id="outputTextFichaAtendimentoDenunciado" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.denunciado.toDetail}" />
+				</h:panelGrid>
+				
+				<h:panelGrid id="panelGrid-cadFichaAtendimentoGrauDenunciadoImp" columns="2" cellpadding="2" >
+					<p:outputLabel value="Grau Parentesco:" style="font-weight: bold;" for="outputTextFichaAtendimentoGrauDenunciado" />
+					<p:outputLabel id="outputTextFichaAtendimentoGrauDenunciado" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.grauParentescoDenunciado}" />
+				</h:panelGrid>
+				
+				<p:panel id="pamel-FichaAtendimentoReferenciadaImp" header="Referenciada" >
+						<h:panelGrid id="panelGrid-cadFichaAtendimentoReferenciadaImp" columns="2" cellpadding="2">
+							<p:outputLabel value="Serviço:"  style="font-weight: bold;" for="outputTextFichaAtendimentoReferenciada" /> 
+							<p:outputLabel id="outputTextFichaAtendimentoReferenciada" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.referenciadaServico}" /> 
+							<p:outputLabel value="Observação:"  style="font-weight: bold;" for="outputTextFichaAtendimentoReferenciadaObs" /> 
+							<p:outputLabel id="outputTextFichaAtendimentoReferenciadaObs" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.referenciadaServicoObs}" /> 
+						</h:panelGrid>
+				</p:panel>
+
+				<p:spacer />	
+				<p:panel id="pamel-FichaAtendimentoDocumentoImp" header="Documento Encaminhamento" >
+						<h:panelGrid id="panelGrid-cadFichaAtendimentoDocumentoImp" columns="2" cellpadding="2">
+							<p:outputLabel value="Documento:"  style="font-weight: bold;" for="outputTextFichaAtendimentoDocumento" /> 
+							<p:outputLabel id="outputTextFichaAtendimentoDocumento" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.documentoEncaminhamento}" /> 
+							<p:outputLabel value="Observação:"  style="font-weight: bold;" for="outputTextFichaAtendimentoDocumentoObs" /> 
+							<p:outputLabel id="outputTextFichaAtendimentoDocumentoObs" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.documentoEncaminhamentoObs}" /> 
+						</h:panelGrid>
+				</p:panel>
+			
+				<p:spacer />	
+				<p:panel id="pamel-FichaAtendimentoMotivoImp" header="Motivo da Procura" >
+						<h:panelGrid id="panelGrid-cadFichaAtendimentoMotivoImp" columns="2" cellpadding="2">
+							<p:outputLabel id="outputTextFichaAtendimentoMotivo" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.motivoEncaminhamento}" />
+						</h:panelGrid>
+				</p:panel>
+			
+				<p:spacer />	
+				<p:panel id="pamel-FichaAtendimentoProvidenciaImp" header="Providência" >
+						<h:panelGrid id="panelGrid-cadFichaAtendimentoPorvidenciaImp" columns="2" cellpadding="2">
+							<p:outputLabel id="outputTextFichaAtendimentoProvidência" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.providencia}" />
+						</h:panelGrid>
+				</p:panel>				
+			</h:panelGrid>
+			<center>
+				<h:panelGrid id="pamel-buttomImpDialogFichAtendimento" columns="2" 	cellpadding="3">
+					<p:commandButton value="Imprimir" type="button"   icon="ui-icon-print">
+					    <p:printer target="panel-dadosFichaAtendimentoImp" />
+					</p:commandButton>	
+					<p:commandButton value="Fechar" type="button"   icon="ui-icon-close" onclick="PF('dialogImpFichaAtendimento').hide();" />					
+				</h:panelGrid>
+			</center>	
+		</p:dialog>
+		
+	<!-- ********************DIALOG PARA IMPRESSAO DOS DADOS DA EVOLUÇÃO********************  -->
+		<p:dialog header="Imprimir - Dados da Evolução" id="dialogImpEvolucao" widgetVar="dialogImpEvolucao" 
+		  closable="true" height="650">
+		 	<div id="divPrint" >
+		 	<h:panelGrid id="panelGrid-dadosEvolucaoImp" style="width:750px;border:solid 1px;border-radius:5px;margin-right: 15px;" >
+				<h:panelGrid id="panelGrid-EvolucaoHeader" columns="2" cellpadding="1" style="margin-left:30px;" >
+					<p:graphicImage url="/resources/imagens/logo_cram.jpg" height="62px;" />
+					<h:panelGrid id="panelGrid-EvolucaocramHeader" columns="1" cellpadding="1" >
+						<p:outputLabel  value="Scram - Sistema do Centro de Referência de Atendimento à Mulher"
+							style="color: black;font-size: 16px;"/>
+						<p:outputLabel  value="Dados da Evolução" style="color: black;font-size: 14px;"/>
+					</h:panelGrid>
+				</h:panelGrid>
+				<div style="border:solid 1px; border-radius:20px;"/>
+			
+			<p:panel id="panel-dadosFAImp"  header="Dados da Ficha de Atendimento">			
+				<h:panelGrid id="panelGrid-EvolucaoFACodImp" columns="6" cellpadding="1" >
+					<p:outputLabel value="Código:" style="font-weight: bold;" for="outputTextFAId" />
+					<p:outputLabel id="outputTextFAId" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.id}" />				
+				
+					<p:outputLabel value="Processo:" style="font-weight: bold;margin-left: 40px;" for="outputTextFAProcesso" />
+					<p:outputLabel id="outputTextFAProcesso" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.processo}" />
+									
+					<p:outputLabel value="Data:" style="font-weight: bold;margin-left: 40px;" for="outputTextFAData" />
+					<p:outputLabel id="outputTextFAData" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.dataFichaAtendimento}"  converter="dateConverter" />				
+				</h:panelGrid>
+				
+				<h:panelGrid id="panelGrid-EvolucaoFATipoViolenciaImp" columns="2" cellpadding="1" >
+					<p:outputLabel value="Tipo Violência:" style="font-weight: bold;" for="outputTextFATipoViolencia" />
+					<p:outputLabel id="outputTextFATipoViolencia" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.tipoViolenciaDetail}" />
+				</h:panelGrid>
+
+				<h:panelGrid id="panelGrid-EvolucaoFAUsuariaImp" columns="2" cellpadding="1" >
+					<p:outputLabel value="Usuária:" style="font-weight: bold;" for="outputTextFAUsuaria" />
+					<p:outputLabel id="outputTextFAUsuaria" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.usuaria.toDetail}" />
+				</h:panelGrid>
+
+				<h:panelGrid id="panelGrid-EvolucaoFADenunciadoImp" columns="2" cellpadding="1" >
+					<p:outputLabel value="Denunciado:" style="font-weight: bold;" for="outputTextFADenunciado" />
+					<p:outputLabel id="outputTextFADenunciado" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.denunciado.toDetail}" />
+				</h:panelGrid>
+
+				<h:panelGrid id="panelGrid-EvolucaoFAGrauDenunciadoImp" columns="2" cellpadding="1" >
+					<p:outputLabel value="Grau de Parentesco:" style="font-weight: bold;" for="outputTextFAGrauDenunciado" />
+					<p:outputLabel id="outputTextFAGrauDenunciado" value="#{cadFichaAtendimentoController.fichaAtendimentoCad.grauParentescoDenunciado}" />
+				</h:panelGrid>
+			</p:panel>
+			
+			<p:panel id="panel-dadosEvolucaoImp"  header="Dados da Ficha de Atendimento">
+			    <p:repeat value="#{cadFichaAtendimentoController.evolucaoFichaAtendimentoList}" var="evolucao">
+		    		<p:spacer />
+			    	<h:panelGrid id="panelGrid-EvolucaoDados" columns="6" cellpadding="1">
+			    		<p:outputLabel value="Data:" style="font-weight: bold;" for="outputDataEvolucao" />
+						<p:outputLabel id="outputDataEvolucao" value="#{evolucao.data}" converter="dateConverter"/>
+
+			    		<p:outputLabel value="Assunto:" style="font-weight: bold;margin-left: 34px;" for="outputAssuntoEvolucao" />
+						<p:outputLabel id="outputAssuntoEvolucao" value="#{evolucao.assunto}"/>
+
+			    		<p:outputLabel value="Responsável:" style="font-weight: bold;margin-left: 34px;" for="outputResponsavelvolucao" />
+						<p:outputLabel id="outputResponsavelvolucao" value="#{evolucao.usuario.nome}"/>
+			    	</h:panelGrid>
+			    	<h:panelGrid id="panelGrid-EvolucaoDescricao" columns="1" cellpadding="1">
+						<p:outputLabel  value="Descrição:" style="font-weight: bold;" for="outputDescricao" />
+						<p:outputLabel  id="outputDescricao" value="#{evolucao.descricao}"/>
+			    	</h:panelGrid>
+		    		<div style="border:solid 0.5px; border-radius:20px;"/>	
+			    </p:repeat>			
+			</p:panel>
+	     </h:panelGrid>
+	     </div>
+		 	<center>
+				<h:panelGrid id="pamel-buttomImpDialogEvolucap" columns="3" 	cellpadding="3">
+					<p:commandButton value="Imprimir" type="button" icon="ui-icon-print" onclick="printDiv('divPrint');"/>
+					<p:commandButton value="Fechar" type="button"   icon="ui-icon-close" onclick="PF('dialogImpEvolucao').hide();" />					
+				</h:panelGrid>
+			</center>
+		</p:dialog>
+		
+
+<!--  ********************DIALOG PARA APRESENTAR OS TIPOS DE VIOLENCIA********************  -->
+		<p:dialog header="Tipos de Violência - Lei nº 11.340, de 7 de Agosto de 2006."
+			id="dialogTipoViolencia" widgetVar="dialogTipoViolencia" closable="true" resizable="false">
+			<h:panelGrid id="panel-tipoVilencia" style="width:800px;">
+				<h:panelGrid id="panelGrid-tipoViolencia"
+					style="text-align: justify;" columns="1" cellpadding="1">
+					<p:outputLabel value="Art. 7º  São formas de violência doméstica e familiar contra a mulher, entre outras:" />
+					<p>
+						<b>I - a violência física,</b> entendida como qualquer conduta que
+						ofenda sua integridade ou saúde corporal;
+					</p>
+					<p>
+						<b>II - a violência psicológica,</b> entendida como qualquer
+						conduta que lhe cause dano emocional e diminuição da autoestima ou
+						que lhe prejudique e perturbe o pleno desenvolvimento ou que vise
+						degradar ou controlar suas ações, comportamentos, crenças e
+						decisões, mediante ameaça, constrangimento, humilhação,
+						manipulação, isolamento, vigilância constante, perseguição
+						contumaz, insulto, chantagem, violação de sua intimidade,
+						ridicularização, exploração e limitação do direito de ir e vir ou
+						qualquer outro meio que lhe cause prejuízo à saúde psicológica e à
+						autodeterminação; (Redação dada pela Lei nº 13.772, de 2018)
+					</p>
+					<p>
+						<b>II - a violência sexual,</b> entendida como qualquer conduta
+						que a constranja a presenciar, a manter ou a participar de relação
+						sexual não desejada, mediante intimidação, ameaça, coação ou uso
+						da força; que a induza a comercializar ou a utilizar, de qualquer
+						modo, a sua sexualidade, que a impeça de usar qualquer método
+						contraceptivo ou que a force ao matrimônio, à gravidez, ao aborto
+						ou à prostituição, mediante coação, chantagem, suborno ou
+						manipulação; ou que limite ou anule o exercício de seus direitos
+						sexuais e reprodutivos;
+					</p>
+					<p>
+						<b>IV - a violência patrimonial,</b> entendida como qualquer
+						conduta que configure retenção, subtração, destruição parcial ou
+						total de seus objetos, instrumentos de trabalho, documentos
+						pessoais, bens, valores e direitos ou recursos econômicos,
+						incluindo os destinados a satisfazer suas necessidades;
+					</p>
+					<p>
+						<b>V - a violência moral,</b> entendida como qualquer conduta que
+						configure calúnia, difamação ou injúria.
+					</p>
+				</h:panelGrid>
+				
+			</h:panelGrid>
+				<center>
+					<h:panelGrid id="pamel-closeTipoViolencia" columns="1" cellpadding="1">
+						<p:commandButton value="Fechar" type="button" icon="ui-icon-close" onclick="PF('dialogTipoViolencia').hide();" />				
+					</h:panelGrid>
+				</center>	
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>
+</html>

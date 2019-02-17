@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template/layoutBase.xhtml">
+	<ui:define name="content">
+
+		<p:tabView id="tbview-cadUsuario" activeIndex="#{cadUsuarioController.tabIndexCadUsuario}"
+			style="width:auto;height:auto;margin:auto;" effect="blind">
+			<p:tab id="tb-consultaUsuario" title="Consultar Usuários">
+				<h:form style="margin:autotext-align:center;" id="form-consulta">
+					<h:panelGrid id="panelGrid-campos-form" columns="5" cellpadding="5">
+
+						<p:outputLabel value="Nome:" for="inputText-usuarioFindNome" />
+						<p:inputText id="inputText-usuarioFindNome"
+							style="width:300px;height:11px;" maxlength="70"
+							value="#{cadUsuarioController.usuarioFind.nome}" />
+
+						<p:outputLabel value="CPF:" for="inputText-usuarioFindCpf" />
+						<p:inputText id="inputText-usuarioFindCpf"
+							style="width:90px;height:11px;" maxlength="14"
+							value="#{cadUsuarioController.usuarioFind.cpf}"
+							onkeydown="javascript: fMasc( this, mCPF );" />
+
+						<p:commandButton value="Pesquisar" style="height:23px;"
+							id="commandButton-usuarioCadFind" icon="ui-icon-search"
+							actionListener="#{cadUsuarioController.findUsuario}"
+							update="dataTable-usuarioList" />
+						
+					</h:panelGrid>
+					<p:dataTable id="dataTable-usuarioList" var="usuario"
+						value="#{cadUsuarioController.usuarioList}" rows="15"
+						paginator="true"
+                 		paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+						style="width:100%;" emptyMessage="Nenhum Registro Encontrado"
+						resizableColumns="true" >
+
+						<f:facet name="header">
+     				       Usuários
+      				    </f:facet>
+						<p:column headerText="Código" sortBy="#{usuario.id}" style="text-align:center;" width="5%">
+							<h:outputText value="#{usuario.id}" />
+						</p:column>
+
+						<p:column headerText="Nome" sortBy="#{usuario.nome}">
+							<h:outputText value="#{usuario.nome}" />
+						</p:column>
+
+						<p:column headerText="CPF" sortBy="#{usuario.cpf}" style="text-align:center;">
+							<h:outputText value="#{usuario.cpf}" />
+						</p:column>
+
+						<p:column headerText="E-mail" sortBy="#{usuario.email}" style="text-align:center;">
+							<h:outputText value="#{usuario.email}" />
+						</p:column>
+
+						<p:column headerText="Perfil" sortBy="#{usuario.perfilDetail}" style="text-align:center;">
+							<h:outputText value="#{usuario.perfilDetail}" />
+						</p:column>
+
+						<p:column headerText="Status" sortBy="#{usuario.status}" style="text-align:center;">
+							<h:outputText
+								value="#{usuario.status eq 'TRUE' ? 'Liberado' : 'Bloqueado'}" />
+						</p:column>
+
+						<p:column style="text-align: center;" width="5%;" headerText="Ações"  exportable="false">
+							<p:commandButton id="btnDetalharUsuario"
+								style="height: 20px;width: 25px;margin:-2px;" update=":tbview-cadUsuario"
+								title="Editar Usuário" icon="ui-icon-search"
+								action="#{cadUsuarioController.detalharUsuario}"  >
+								<f:setPropertyActionListener value="#{usuario.id}" target="#{cadUsuarioController.usuarioIdSelecionado}" />
+							</p:commandButton>
+						</p:column>
+						
+						 <f:facet name="footer">
+      				       	 <div style="float:left;padding-top: 7px;">
+				               <h:commandLink>
+									<p:graphicImage url="/resources/imagens/xls_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para Excel" />
+				                    <p:dataExporter type="xls" target="dataTable-usuarioList" encoding="ISO-8859-1" options="#{exportaDocumentoCustom.excelOpt}"  fileName="scram_usuarios" />
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+
+				                    <p:graphicImage url="/resources/imagens/pdf_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para PDF" />
+				                    <p:dataExporter type="pdf" target="dataTable-usuarioList" fileName="scram_usuarios" encoding="ISO-8859-1" preProcessor="#{exportaDocumentoCustom.preProcessPDFUsuarios}"  options="#{exportaDocumentoCustom.pdfOpt}"/>
+				                </h:commandLink>
+				 
+				                <h:commandLink>
+									<p:graphicImage url="/resources/imagens/csv_icon.jpg" style="height: 24px;width: 21px;" title="Exportar para CSV" />
+				                    <p:dataExporter type="csv" target="dataTable-usuarioList" encoding="ISO-8859-1" fileName="scram_usuarios"/>
+				                </h:commandLink>		 
+			            	</div>
+			      		 </f:facet>
+
+					</p:dataTable>
+
+					
+				</h:form>
+			</p:tab>
+			 <p:tab id="tab-cadUsuario" title="Cadastrar Usuário">
+			    	<h:form style="margin:autotext-align:center;" id="form-cadUsuario">
+						<p:messages id="messagesCadUsuario"  style="width:542px;" showDetail="true"  autoUpdate="true" closable="true" />
+						<p:panel id="panel-cadUuario" style="width:534px;">
+							<h:panelGrid id="panelGrid-cadUsuario" columns="2"
+									cellpadding="5">
+	
+								<p:outputLabel value="Código:" for="inputText-usuarioId" />
+								<p:inputText id="inputText-usuarioId" disabled="true"
+									style="width:50px;margin-left: 18px;text-align:center;"
+									value="#{cadUsuarioController.usuarioCadastro.id}" />
+	
+								<p:outputLabel value="Nome*:" for="inputText-usuarioCadnome" />
+								<p:inputText id="inputText-usuarioCadnome"
+									style="width:400px;margin-left: 18px;" maxlength="55"
+									value="#{cadUsuarioController.usuarioCadastro.nome}"/>
+	
+								<p:outputLabel value="CPF*:" for="inputText-usuarioCadcpf" />
+								<p:inputText id="inputText-usuarioCadcpf"
+									style="width:110px;margin-left: 18px;" maxlength="14"
+									value="#{cadUsuarioController.usuarioCadastro.cpf}"
+									onkeydown="javascript: fMasc( this, mCPF );"/>
+	
+								<p:outputLabel value="E-mail:" for="inputText-usuarioCademail" />
+								<p:inputText id="inputText-usuarioCademail"
+									style="width:400px;margin-left: 18px;" maxlength="140"
+									value="#{cadUsuarioController.usuarioCadastro.email}" />
+							</h:panelGrid>
+	
+							<h:panelGrid id="panelGrid-cadUsuario-telefone" columns="4"
+								cellpadding="5">
+								<p:outputLabel value="Tel. Celular:"
+									for="inputText-usuarioCadtelCelular"/>
+								<p:inputText id="inputText-usuarioCadtelCelular"
+									style="width:100px; margin-left:1px;" maxlength="14"
+									value="#{cadUsuarioController.usuarioCadastro.tel_celular}"
+									onkeydown="javascript: fMasc( this, mTel );"/>
+	
+								<p:outputLabel value="Tel. Residencial:"
+									for="inputText-usuarioCadtelResidencial" style="margin-left: 75px;"/>
+								<p:inputText id="inputText-usuarioCadtelResidencial"
+									style="width:100px" maxlength="14"
+									value="#{cadUsuarioController.usuarioCadastro.tel_residencial}" 
+									onkeydown="javascript: fMasc( this, mTel );"/>
+							</h:panelGrid>
+	
+							<h:panelGrid id="panelGrid-cadUsuario-endereco" columns="2"
+								cellpadding="5">
+								<p:outputLabel value="Endereço:"
+									for="inputText-usuarioCadendereco" />
+								<p:inputText id="inputText-usuarioCadendereco"
+									style="width:400px;margin-left: 9px;" maxlength="140"
+									value="#{cadUsuarioController.usuarioCadastro.endereco}" />
+							</h:panelGrid>
+	
+							<h:panelGrid id="panelGrid-cadUsuario-cidade" columns="3"
+									cellpadding="5">
+								<p:outputLabel value="Cidade:" for="inputText-usuarioCadCidade" />
+								<p:autoComplete id="inputText-usuarioCadCidade"
+									style="margin-left: 22px;"
+									value="#{cadUsuarioController.usuarioCadastro.cidade}"
+									completeMethod="#{cadUsuarioController.findCidadeAutoComplete}"
+									var="cidade" queryDelay="250" minQueryLength="3"
+									itemLabel="#{cidade.toDetail}" itemValue="#{cidade}"
+									converter="cidadeConverter" size="76">									
+								</p:autoComplete>
+								<p:commandButton id="btnFindCidade"
+									style="margin-left: -43px;" disabled="true" icon="ui-icon-search">									
+								</p:commandButton>
+							</h:panelGrid>
+							
+							<h:panelGrid id="panelGrid-cadUsuario-perfil" columns="4"
+								cellpadding="5">
+								<p:outputLabel value="Perfil:" />
+								<p:selectOneMenu id="usuarioCadPerfil"
+									style="margin-left: 35px;"
+									value="#{cadUsuarioController.usuarioCadastro.perfil}">
+									<f:selectItems value="#{perfilUsuarioListener.perfis}" />
+								</p:selectOneMenu>
+								<p:outputLabel value="Status:" for="select-usuarioCadtatus" style="margin-left: 57px;"/>
+								<p:selectOneMenu id="select-usuarioCadtatus"
+									style="width:75px;margin-left:10px;"
+									value="#{cadUsuarioController.usuarioCadastro.status}">
+									<f:selectItem itemLabel="Bloqueado" itemValue="false" />
+									<f:selectItem itemLabel="Liberado" itemValue="true" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+							<p:spacer />
+							<p:spacer />
+							
+							<!--================================BEGIN=================================-->
+							<!--SOMENTE PARA NOVO USUARIO, AO EDITAR USUARIO MOSTRA OPÇÃO DE ALTERAR SENHA NOS BOTOES-->
+							<p:panel id="panel-cadUuarioSenha" style="width:502px;" rendered="#{cadUsuarioController.usuarioCadastro.id eq 0}">
+								<h:panelGrid id="panelGrid-cadUsuario-senha" columns="2"
+									cellpadding="5">
+									<p:outputLabel value="Senha*:" for="inputText-usuarioCadsenha" />
+									<p:password id="inputText-usuarioCadsenha" maxlength="15"
+										style="margin-left: 16px;" 
+										value="#{cadUsuarioController.usuarioCadastro.senha}"/>
+		
+									<p:outputLabel value="Confirmar Senha*:" for="inputText-usuarioCadsenha2" />
+									<p:password id="inputText-usuarioCadsenha2" maxlength="15"
+										style="margin-left: 16px;"
+										value="#{cadUsuarioController.usuarioCadastro.comparaSenha}"/>
+								</h:panelGrid>
+							</p:panel>
+							<!--================================END=================================-->
+								
+							<p:spacer />
+							<p:spacer />
+	
+							<h:panelGrid id="panelGrid-cadUsuario-button" columns="4"
+								cellpadding="5">
+								<p:commandButton id="commandButton-usuarioCadSave"
+									value="Salvar" icon="ui-icon-check"
+									actionListener="#{cadUsuarioController.salvarUsuario}"
+									update="tbview-cadUsuario" />
+	
+								<p:commandButton value="Excluir" id="btnDeleteUsuario" 
+								   style="height: 23px;"
+								   icon="ui-icon-close"
+								   onclick="if (! confirm('Realmente quer excluir este usuário?')) return false" 
+								   update="tbview-cadUsuario"  
+								   actionListener="#{cadUsuarioController.deletarUsuario}"
+								   rendered="#{cadUsuarioController.usuarioCadastro.id != 0}"/>
+								
+								<p:commandButton id="commandButton-usuarioCadNovoUsuario" 
+									value="Novo Usuário" style="height:23px;" icon="ui-icon-person"
+									actionListener="#{cadUsuarioController.novoUsuario}"
+									update="form-cadUsuario" />
+									
+								<p:commandButton value="Alterar Senha" id="btnAlterarSenhaUsuario" 
+								   style="height: 23px;"
+								   icon="ui-icon-key"
+								   onclick="PF('dialogAlterarSenhaUsuario').show();"
+								   rendered="#{cadUsuarioController.usuarioCadastro.id != 0}"/>							
+							</h:panelGrid>
+						</p:panel>
+					</h:form>
+			</p:tab>
+		</p:tabView>
+	
+		
+		<p:dialog header="Alterar Senha do Usuário" widgetVar="dialogAlterarSenhaUsuario" 
+				closable="true" style="background-color: #f3f3f3;">						
+				<h:form style="margin:autotext-align:center;" id="form-alterarSenha">
+					<p:panel id="panelAlterarSenhaUsuário">
+						<h:panelGrid id="panelGrid-altSenhaUsuario" columns="2" cellpadding="3">
+							<p:outputLabel value="Nova Senha:*"
+								for="inputText-altSenhaUsuario" />
+							<p:password id="inputText-altSenhaUsuario" maxlength="15"
+								value="#{cadUsuarioController.novaSenha}" />
+
+							<p:outputLabel value="Confirmar Nova Senha:*"
+								for="inputText-altSenhaUsuarioConf" />
+							<p:password id="inputText-altSenhaUsuarioConf" maxlength="15"
+								value="#{cadUsuarioController.confirmaNovaSenha}" />
+						</h:panelGrid>
+						<p:spacer />
+						<p:spacer />
+
+						<h:panelGrid id="panelGrid-altSenhaUsuarioButton" columns="2" cellpadding="3">
+							<p:commandButton id="button-altSenhaUsuarioSave" value="Salvar"
+								icon="ui-icon-check"
+								actionListener="#{cadUsuarioController.salvarSenhaUsuario}"
+								update="form-alterarSenha" />
+
+							<p:commandButton value="Cancelar"
+								id="button-altSenhaUsuarioCancel" style="height: 23px;"
+								icon="ui-icon-cancel"
+								onclick="PF('dialogAlterarSenhaUsuario').hide();" />
+						</h:panelGrid>														
+					</p:panel>	
+				</h:form>				
+		</p:dialog>
+
+	
+	</ui:define>
+</ui:composition>
+</html>

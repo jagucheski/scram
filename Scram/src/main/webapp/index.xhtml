@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet library="css" name="default.css" />
+	<h:outputStylesheet library="css" name="theme.css"/>
+	<h:outputScript name="imputMasc.js" library="js"/>	
+	<link rel="icon" href="resources/imagens/favicon.jpg"/>
+	<title>-SCRAM- Parobé/RS</title>
+</h:head>
+
+<h:body style="display:flex;background-color:#f3f3f3;">
+
+	<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();" />    
+		<p:dialog  widgetVar="statusDialog" draggable="false"  closable="false" resizable="false" header="Carregando...">  
+		    <center>
+		 	   <h:graphicImage value="/resources/imagens/ajax-loader.gif"/>
+		    </center>
+	</p:dialog>  
+
+
+	<h:form id="form-login-usuario" style=" margin:auto;">
+
+		<div class="font_titulo_sistema">SCRAM</div>
+		<div class="font_sub_titulo_sistema">- Sistema do Centro de Referência de Atendimento à Mulher -</div>
+		
+		<p:growl id="growl-mensagem" showDetail="true" sticky="true" />
+
+		<p:panel id="panel-login-principal" header="- Login -"
+			footer="Coordenadoria da Mulher - Parobé/RS" 
+			style="width:400px;margin: auto;margin-top: 20px;">
+
+			<h:panelGrid columns="2" cellpadding="5">
+					<p:graphicImage url="/resources/imagens/logo_cram.jpg" height="160px;" />
+					<h:panelGrid id="panelGrid-login-usuario" columns="2" cellpadding="5">
+						<p:outputLabel value="CPF:" />
+						<p:inputText id="inputText-cpf"
+							maxlength="14" placeholder="Digite seu CPF"
+							value="#{usuarioController.usuarioLogin.cpf}" 
+							onkeydown="javascript: fMasc( this, mCPF );"/>
+	
+						<p:outputLabel value="Senha:" />
+						<p:password id="password-usuario" placeholder="Digite sua senha"
+							value="#{usuarioController.usuarioLogin.senha}" maxlength="15" />
+	 	            		<p:spacer />
+	 	    
+	 	               	<p:commandButton value="Acessar"
+							id="commandButton-acessar" icon="ui-icon-check"
+							action="#{usuarioController.EfetuarLogin}" update="growl-mensagem" />	           
+	
+					</h:panelGrid>
+
+			</h:panelGrid>
+
+		</p:panel>
+
+	</h:form>
+
+</h:body>
+</html>
