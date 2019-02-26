@@ -1,17 +1,13 @@
 package br.gov.rs.parobe.scram.controller;
 
 import java.io.Serializable;
-import java.util.Date;
-
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
-import br.gov.rs.parobe.scram.dao.AcessoUsuarioDao;
 import br.gov.rs.parobe.scram.dao.UsuarioDao;
-import br.gov.rs.parobe.scram.model.AcessoUsuario;
 import br.gov.rs.parobe.scram.model.Usuario;
 import br.gov.rs.parobe.scram.uteis.Uteis;
 
@@ -35,13 +31,6 @@ public class UsuarioManagedBean implements Serializable {
 	}
 
 	public String Logout() {
-		
-		AcessoUsuario acessoUsuarioTemp = new AcessoUsuario();
-		acessoUsuarioTemp.setUsuario((Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuarioAutenticado"));
-		acessoUsuarioTemp.setTipo("Logout");
-		acessoUsuarioTemp.setData(new Date());				
-		AcessoUsuarioDao.getInstance().persist(acessoUsuarioTemp);
-		
 		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 		return "/index.xhtml?faces-redirect=true";
 	}
@@ -72,13 +61,7 @@ public class UsuarioManagedBean implements Serializable {
 				usuarioLogado.setPerfil(usuarioTemp.getPerfil());
 				FacesContext facesContext = FacesContext.getCurrentInstance();
 				facesContext.getExternalContext().getSessionMap().put("usuarioAutenticado", usuarioLogado);
-				
-				AcessoUsuario acessoUsuarioTemp = new AcessoUsuario();
-				acessoUsuarioTemp.setUsuario(usuarioTemp);
-				acessoUsuarioTemp.setTipo("Login");
-				acessoUsuarioTemp.setData(new Date());				
-				AcessoUsuarioDao.getInstance().persist(acessoUsuarioTemp);
-				
+
 				return "sistema/home?faces-redirect=true";
 			}
 		}

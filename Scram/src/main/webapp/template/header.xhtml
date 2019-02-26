@@ -13,7 +13,7 @@
 		<p:menuitem value="Home" icon="ui-icon-home" url="home.xhtml"/>
 		<p:submenu label="Administração" icon="ui-icon-gear" rendered="#{usuarioController.usuarioLogado.perfil eq 'ROLE_ADMIN' or usuarioController.usuarioLogado.perfil eq 'ROLE_COORDENADOR'}" >
 			<p:menuitem value="Usuários" icon="ui-icon-document" url="usuarioCad.xhtml" title="Cadastro de Usuários"/>
-			<p:menuitem value="Acessos" icon="ui-icon-document" url="acessoView.xhtml" title="Acesso de Usuários"/>
+			<p:menuitem value="Acessos ao Sistema" icon="ui-icon-document" url="acessoView.xhtml" title="Acesso de Usuários"/>
 		</p:submenu>
 		<p:submenu label="Cadastro" icon="ui-icon-document" rendered="#{usuarioController.usuarioLogado.perfil eq 'ROLE_ADMINISTRATIVO' or usuarioController.usuarioLogado.perfil eq 'ROLE_COORDENADOR'}">
 			<p:menuitem value="Usuária" icon="ui-icon-document" url="usuariaCad.xhtml"  title="Cadastro de Usuária" />

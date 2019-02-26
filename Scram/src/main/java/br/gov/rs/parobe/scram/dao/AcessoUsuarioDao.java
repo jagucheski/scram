@@ -42,7 +42,7 @@ public class AcessoUsuarioDao {
 	@SuppressWarnings("unchecked")
 	public List<AcessoUsuario> findAll() {
 		try {
-			return (List<AcessoUsuario>) entityManager.createQuery("from AcessoUsuario acesso order by acesso.data").getResultList();
+			return (List<AcessoUsuario>) entityManager.createQuery("from AcessoUsuario au where au.usuario.nome != 'Administrador' order by au.data").getResultList();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return null;
@@ -53,7 +53,7 @@ public class AcessoUsuarioDao {
 	@SuppressWarnings("unchecked")
 	public List<AcessoUsuario> findAllByUsuarioNome(String nomeUsuario) {
 		try {
-			Query query = entityManager.createQuery("from AcessoUsuario u where upper(u.usuario.nome) like upper(:nomeUsuario) order by u.usuario.nome");
+			Query query = entityManager.createQuery("from AcessoUsuario u where upper(u.usuario.nome) like upper(:nomeUsuario) and u.usuario.nome != 'Administrador' order by u.usuario.nome");
 			query.setParameter("nomeUsuario", (new StringBuilder("%")).append(nomeUsuario).append("%").toString());
 			return (ArrayList<AcessoUsuario>) query.getResultList();
 		} catch (Exception e) {
