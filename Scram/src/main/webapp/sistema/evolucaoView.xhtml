@@ -73,7 +73,7 @@
 						<p:column style="text-align: center;" width="5%;" headerText="Ações" exportable="false">
 							<p:commandButton id="btnDetalharFichaAtendimento"
 								style="height: 20px;width: 25px;margin:-2px;" update=":panel-dadosFichaAtendimento"
-								title="Editar" icon="ui-icon-search" oncomplete="PF('dialogFichaAtendimento').show();"
+								title="Detalhar" icon="ui-icon-search" oncomplete="PF('dialogFichaAtendimento').show();"
 								action="#{viewEvolucaoController.detalharFichaAtendimento}" process="@this">
 								<f:setPropertyActionListener value="#{fichaAtendimento.id}" target="#{viewEvolucaoController.fichaAtendimentoIdSelecionado}" />
 							</p:commandButton>
@@ -211,7 +211,7 @@
 						<p:column style="text-align: center;" width="5%;" headerText="Ações" exportable="false">
 							<p:commandButton id="btnDetalharEvolucaoFichaAtendimento"
 								style="height: 20px;width: 25px;margin:-2px;" update="dialogViewEvolucao"
-								title="Editar" icon="ui-icon-search"
+								title="Visualizar Evolução" icon="ui-icon-search"
 								action="#{viewEvolucaoController.detalharEvolucaoFichaAtendimento}" 
 								oncomplete="PF('dialogViewEvolucao').show();" process="@this">											
 								<f:setPropertyActionListener value="#{evolucao.id}" target="#{viewEvolucaoController.evolucaoFichaAtendimentoIdSelecionado}" />

@@ -73,7 +73,7 @@
 						<p:column style="text-align: center;" width="5%;" headerText="Ações" exportable="false">
 							<p:commandButton id="btnDetalharFichaAtendimento"
 								style="height: 20px;width: 25px;margin:-2px;" update=":panel-dadosFichaAtendimento"
-								title="Editar" icon="ui-icon-search" oncomplete="PF('dialogFichaAtendimento').show();"
+								title="Visualizar Ficha de Atendimento" icon="ui-icon-search" oncomplete="PF('dialogFichaAtendimento').show();"
 								action="#{viewFichaAtendimentoController.detalharFichaAtendimento}" process="@this">
 								<f:setPropertyActionListener value="#{fichaAtendimento.id}" target="#{viewFichaAtendimentoController.fichaAtendimentoIdSelecionado}" />
 							</p:commandButton>
